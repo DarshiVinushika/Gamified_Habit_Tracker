@@ -10,10 +10,10 @@ const Navbar = () => {
         <img src={logo} alt="Logo" className='h-12' />
       </div>
       
-      <div className='flex items-center space-x-16 text-xl abhaya-libre-semibold'>
+      <div className='flex items-center space-x-16 text-xl adamina-regular'>
         <Link to={"/features"} className="text-white hover:text-orange-200 transition">Features</Link>
         <Link to={"/about"} className="text-white hover:text-orange-200 transition">About</Link>
-        <Link to="/login" className="px-8 py-2 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 transition">
+        <Link to="/login" className="px-8 py-2 rounded-full text-white shadow-md bg-gradient-to-r from-blue-400 to-purple-400 hover:from-blue-500 hover:to-purple-500 transition">
           Login
         </Link>
       </div>
