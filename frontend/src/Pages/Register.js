@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Nav from "../Components/Nav";
+import Nav from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
 const Register = () => {
