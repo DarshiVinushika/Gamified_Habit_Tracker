@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Acme&family=Adamina&family=Afacad:ital,wght@0,400..700;1,400..700&family=Amaranth:ital,wght@0,400;0,700;1,400;1,700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap');
+
+.winky-sans{
+  font-family: "Winky Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.merriweather {
+  font-family: "Merriweather", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+.afacad {
+  font-family: "Afacad", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.abhaya-libre-regular {
+  font-family: "Abhaya Libre", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.abhaya-libre-medium {
+  font-family: "Abhaya Libre", serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.abhaya-libre-semibold {
+  font-family: "Abhaya Libre", serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.abhaya-libre-bold {
+  font-family: "Abhaya Libre", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.abhaya-libre-extrabold {
+  font-family: "Abhaya Libre", serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.amaranth-regular {
+  font-family: "Amaranth", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.amaranth-bold {
+  font-family: "Amaranth", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.amaranth-regular-italic {
+  font-family: "Amaranth", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.amaranth-bold-italic {
+  font-family: "Amaranth", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+.adamina-regular {
+  font-family: "Adamina", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.acme-regular {
+  font-family: "Acme", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
