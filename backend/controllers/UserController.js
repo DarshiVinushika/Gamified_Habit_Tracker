@@ -90,6 +90,10 @@ exports.getUserById = async (req, res) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      if (req.user.userId !== userId && req.user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. You can only view your own profile." });
+      }      
   
       res.status(200).json({
         message: "User fetched successfully",
@@ -106,6 +110,10 @@ exports.updateUser = async (req, res) => {
     try {
       const { name, password } = req.body;
       const userId = req.params.id;
+
+      if (req.user.userId !== userId && req.user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. You can only update your own profile." });
+      }      
   
       // Find user
       const user = await User.findById(userId);
