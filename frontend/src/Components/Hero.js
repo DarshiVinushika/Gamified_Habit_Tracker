@@ -55,7 +55,7 @@ const Hero = () => {
     >
       <Navbar />
 
-      <div className="flex items-between justify-between pr-16 pt-24">
+      <div className="flex items-between justify-between pr-16 pt-16">
         <div className="pl-48 pt-24 amaranth-bold text-5xl text-[#8B5CF6]">
           <h1>
             Level Up Your{" "}<br/>
@@ -79,7 +79,7 @@ const Hero = () => {
             Join the gamified habit tracking platform designed specifically for SLT interns. Build positive work habits,
             earn XP, unlock badges, and climb the leaderboard while developing skills that matter.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-end">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-full shadow transition flex items-center justify-center text-lg"
