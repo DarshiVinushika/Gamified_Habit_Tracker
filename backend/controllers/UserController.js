@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 
 // Register
 exports.registerUser = async (req, res) => {
@@ -196,6 +198,15 @@ exports.uploadProfilePic = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Delete old profile picture if it exists
+    if (user.profilePic) {
+      const oldPicPath = path.join(__dirname, "..", "uploads", user.profilePic);
+      if (fs.existsSync(oldPicPath)) {
+        fs.unlinkSync(oldPicPath); // delete file
+      }
+    }
+
+    // Save new profile pic filename
     user.profilePic = file.filename;
     await user.save();
 
