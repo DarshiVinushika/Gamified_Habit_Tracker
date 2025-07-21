@@ -8,7 +8,8 @@ exports.registerUser = async (req, res) => {
     const { name, email, password, role } = req.body;
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email already exists" });
+    if (existingUser)
+      return res.status(400).json({ message: "Email already exists" });
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
@@ -17,148 +18,193 @@ exports.registerUser = async (req, res) => {
       name,
       email,
       passwordHash,
-      role: role === "admin" ? "admin" : "intern"  // only allow valid role
+      role: role === "admin" ? "admin" : "intern", // only allow valid role
     });
 
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully", userId: newUser._id });
+    res
+      .status(201)
+      .json({ message: "User registered successfully", userId: newUser._id });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-
 // Login
 exports.loginUser = async (req, res) => {
-    try {
-      const { email, password } = req.body;
-  
-      // Check if user exists
-      const user = await User.findOne({ email });
-      if (!user) return res.status(400).json({ message: "Invalid email or password" });
-  
-      // Compare password
-      const isMatch = await bcrypt.compare(password, user.passwordHash);
-      if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
-  
-      // Generate JWT
-      const token = jwt.sign(
-        {
-          userId: user._id,
-          role: user.role
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
-  
-      res.status(200).json({
-        message: "Login successful",      
+  try {
+    const { email, password } = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(400).json({ message: "Invalid email or password" });
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid email or password" });
+
+    // Generate JWT
+    const token = jwt.sign(
+      {
         userId: user._id,
-        name: user.name,
         role: user.role,
-        token
-      });
-      
-    } catch (err) {
-      res.status(500).json({ message: "Server error", error: err.message });
-    }
-  };
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-  // Get all users
+    res.status(200).json({
+      message: "Login successful",
+      userId: user._id,
+      name: user.name,
+      role: user.role,
+      token,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Get all users
 exports.getAllUsers = async (req, res) => {
-    try {
-      const users = await User.find().select("_id name email role xp level streak createdAt");
-  
-      res.status(200).json({
-        message: "Users fetched successfully",
-        count: users.length,
-        users
-      });
-    } catch (err) {
-      res.status(500).json({ message: "Server error", error: err.message });
-    }
-  };
+  try {
+    const users = await User.find().select(
+      "_id name email role xp level streak createdAt"
+    );
 
-  // Get a user by ID
+    res.status(200).json({
+      message: "Users fetched successfully",
+      count: users.length,
+      users,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Get a user by ID
 exports.getUserById = async (req, res) => {
-    try {
-      const userId = req.params.id;
-  
-      const user = await User.findById(userId).select("_id name email role xp level streak createdAt");
-  
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+  try {
+    const userId = req.params.id;
 
-      if (req.user.userId !== userId && req.user.role !== "admin") {
-        return res.status(403).json({ message: "Access denied. You can only view your own profile." });
-      }      
-  
-      res.status(200).json({
-        message: "User fetched successfully",
-        user
-      });
-    } catch (err) {
-      res.status(500).json({ message: "Server error", error: err.message });
+    const user = await User.findById(userId).select(
+      "_id name email role xp level streak createdAt"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  };
-  
-  
+
+    if (req.user.userId !== userId && req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({
+          message: "Access denied. You can only view your own profile.",
+        });
+    }
+
+    res.status(200).json({
+      message: "User fetched successfully",
+      user,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
 // Update user profile
 exports.updateUser = async (req, res) => {
-    try {
-      const { name, password } = req.body;
-      const userId = req.params.id;
+  try {
+    const { name, password } = req.body;
+    const userId = req.params.id;
 
-      if (req.user.userId !== userId && req.user.role !== "admin") {
-        return res.status(403).json({ message: "Access denied. You can only update your own profile." });
-      }      
-  
-      // Find user
-      const user = await User.findById(userId);
-      if (!user) return res.status(404).json({ message: "User not found" });
-  
-      // Update fields
-      if (name) user.name = name;
-      if (password) {
-        const salt = await bcrypt.genSalt(10);
-        user.passwordHash = await bcrypt.hash(password, salt);
-      }
-  
-      await user.save();
-  
-      res.status(200).json({ message: "User updated successfully", name: user.name, userId: user._id });
-    } catch (err) {
-      res.status(500).json({ message: "Server error", error: err.message });
+    if (req.user.userId !== userId && req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({
+          message: "Access denied. You can only update your own profile.",
+        });
     }
-  };
+
+    // Find user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update fields
+    if (name) user.name = name;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.passwordHash = await bcrypt.hash(password, salt);
+    }
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({
+        message: "User updated successfully",
+        name: user.name,
+        userId: user._id,
+      });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
 
 // Delete a user
 exports.deleteUser = async (req, res) => {
-    try {
-      const userId = req.params.id;
-  
-      const deletedUser = await User.findByIdAndDelete(userId);
-  
-      if (!deletedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      res.status(200).json({ message: "User deleted successfully", userId });
-    } catch (err) {
-      res.status(500).json({ message: "Server error", error: err.message });
-    }
-  };
+  try {
+    const userId = req.params.id;
 
-  // Get Current User
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User deleted successfully", userId });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Get Current User
 exports.getCurrentUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select("_id name email role xp level streak");
+    const user = await User.findById(req.user.userId).select(
+      "_id name email role xp level streak"
+    );
     res.status(200).json({ user });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-  
+// Uploads profile picture
+exports.uploadProfilePic = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.profilePic = file.filename;
+    await user.save();
+
+    res.status(200).json({
+      message: "Profile picture uploaded successfully",
+      filename: file.filename,
+      url: `/uploads/${file.filename}`,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};

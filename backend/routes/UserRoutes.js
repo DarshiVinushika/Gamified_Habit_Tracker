@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { registerUser, loginUser, getAllUsers, updateUser, deleteUser, getUserById, getCurrentUser } = require("../controllers/UserController");
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
+const { uploadProfilePic } = require("../controllers/UserController");
 
 // Public routes
 router.post("/register", registerUser);
@@ -16,6 +17,15 @@ router.get("/:id", authMiddleware, getUserById);
 router.put("/:id", authMiddleware, updateUser);
 router.get("/me", authMiddleware, getCurrentUser);
 
+// Upload a profile picture
+const upload = require("../middleware/uploadMiddleware");
+
+router.post(
+  "/upload-profile-pic",
+  authMiddleware,
+  upload.single("profilePic"),
+  uploadProfilePic
+);
 
 
 module.exports = router;
