@@ -150,4 +150,15 @@ exports.deleteUser = async (req, res) => {
       res.status(500).json({ message: "Server error", error: err.message });
     }
   };
+
+  // Get Current User
+exports.getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("_id name email role xp level streak");
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
   
