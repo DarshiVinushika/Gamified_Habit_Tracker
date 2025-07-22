@@ -1,11 +1,11 @@
 import React from 'react'
-import Nav from '../Components/Nav'
 import Footer from '../Components/Footer'
+import Navbar from '../Components/Navbar'
 
 function Dashboard() {
   return (
     <div>
-      <Nav/>
+      <Navbar/>
       <h1>This is the dashboard</h1>
       <Footer/>
     </div>
