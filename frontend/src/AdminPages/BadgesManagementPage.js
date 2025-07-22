@@ -12,6 +12,7 @@ const BadgesManagementPage = () => {
     icon: "",
   });
   const [loading, setLoading] = useState(false);
+  const [editId, setEditId] = useState(null); // Track editing badge
 
   // Fetch badges from backend
   useEffect(() => {
@@ -29,6 +30,18 @@ const BadgesManagementPage = () => {
     }
   };
 
+  // Edit badge: open modal and fill form
+  const handleEdit = (badge) => {
+    setForm({
+      name: badge.name,
+      description: badge.description,
+      criteria: badge.criteria,
+      icon: badge.icon,
+    });
+    setEditId(badge._id);
+    setShowModal(true);
+  };
+
   // Filter badges by search
   const filteredBadges = badges.filter(badge =>
     badge.name.toLowerCase().includes(search.toLowerCase())
@@ -39,20 +52,31 @@ const BadgesManagementPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Handle form submit
+  // Handle form submit (add or edit)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8080/api/badges", form);
-      setBadges([...badges, res.data]);
+      if (editId) {
+        // Edit badge
+        const res = await axios.put(`http://localhost:8080/api/badges/${editId}`, form);
+        setBadges(badges.map(b => b._id === editId ? res.data : b));
+      } else {
+        // Add badge
+        const res = await axios.post("http://localhost:8080/api/badges", form);
+        setBadges([...badges, res.data]);
+      }
       setShowModal(false);
       setForm({ name: "", description: "", criteria: "", icon: "" });
+      setEditId(null);
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to add badge");
+      alert(err.response?.data?.error || "Failed to save badge");
     }
     setLoading(false);
   };
+
+  // Modal title
+  const modalTitle = editId ? "Edit Badge" : "Add New Badge";
 
   return (
     <div className="p-8">
@@ -60,7 +84,7 @@ const BadgesManagementPage = () => {
         <h1 className="text-3xl font-bold text-purple-900 ">Badges Management</h1>
         <button
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          onClick={() => setShowModal(true)}
+          onClick={() => { setShowModal(true); setEditId(null); setForm({ name: "", description: "", criteria: "", icon: "" }); }}
         >
           <span className="mr-2">➕</span> New Badge
         </button>
@@ -90,7 +114,10 @@ const BadgesManagementPage = () => {
                 <td className="border px-4 py-2">{badge.name}</td>
                 <td className="border px-4 py-2">{badge.description}</td>
                 <td className="border px-4 py-2">
-                  <button className="text-green-600 mr-2 hover:underline">✏️</button>
+                  <button
+                    className="text-green-600 mr-2 hover:underline"
+                    onClick={() => handleEdit(badge)}
+                  >✏️</button>
                   <button
                     className="text-red-600 hover:underline"
                     onClick={() => handleDelete(badge._id)}
@@ -107,17 +134,17 @@ const BadgesManagementPage = () => {
         </table>
       </div>
 
-      {/* Modal for new badge */}
+      {/* Modal for add/edit badge */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
             <button
               className="absolute top-2 right-3 text-2xl text-gray-400 hover:text-red-500"
-              onClick={() => setShowModal(false)}
+              onClick={() => { setShowModal(false); setEditId(null); }}
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold mb-4 text-purple-800">Add New Badge</h2>
+            <h2 className="text-xl font-bold mb-4 text-purple-800">{modalTitle}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Badge Name</label>
@@ -168,7 +195,7 @@ const BadgesManagementPage = () => {
                 className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
                 disabled={loading}
               >
-                {loading ? "Adding..." : "Add Badge"}
+                {loading ? (editId ? "Saving..." : "Adding...") : (editId ? "Save Changes" : "Add Badge")}
               </button>
             </form>
           </div>
@@ -179,4 +206,3 @@ const BadgesManagementPage = () => {
 };
 
 export default BadgesManagementPage;
-
