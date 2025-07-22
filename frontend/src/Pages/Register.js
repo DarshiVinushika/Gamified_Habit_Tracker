@@ -15,22 +15,31 @@ const Register = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [profilePicFile, setProfilePicFile] = useState(null);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMsg("");
     setLoading(true);
-
+  
     try {
-      await axios.post("http://localhost:8080/api/users/register", {
-        name,
-        email,
-        password,
-        role: "intern",
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("role", "intern");
+      if (profilePicFile) {
+        formData.append("profilePic", profilePicFile); // 👈 field name should match backend
+      }
+  
+      await axios.post("http://localhost:8080/api/users/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-
-      navigate("/dashboard");
+  
       toast.success("Registered successfully!");
+      navigate("/dashboard");
     } catch (err) {
       const message =
         err.response?.data?.message || "Registration failed. Try again.";
@@ -39,6 +48,7 @@ const Register = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -55,6 +65,23 @@ const Register = () => {
           )}
 
           <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <label
+                htmlFor="profilePic"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                id="profilePic"
+                name="profilePic"
+                accept="image/*"
+                onChange={(e) => setProfilePicFile(e.target.files[0])}
+                className="mt-1"
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Name
@@ -112,9 +139,9 @@ const Register = () => {
               type="submit"
               disabled={loading}
               className={`w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700 transition
-    flex justify-center items-center
-    ${loading ? "opacity-50 cursor-not-allowed" : ""}
-  `}
+                flex justify-center items-center
+                ${loading ? "opacity-50 cursor-not-allowed" : ""}
+              `}
             >
               {loading && (
                 <svg

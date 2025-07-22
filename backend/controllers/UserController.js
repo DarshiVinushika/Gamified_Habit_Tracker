@@ -15,12 +15,14 @@ exports.registerUser = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
+    const profilePic = req.file ? req.file.filename : "";
 
     const newUser = new User({
       name,
       email,
       passwordHash,
-      role: role === "admin" ? "admin" : "intern", // only allow valid role
+      role: role === "admin" ? "admin" : "intern", 
+      profilePic,
     });
 
     await newUser.save();
