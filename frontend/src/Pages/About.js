@@ -9,7 +9,6 @@ function About() {
       <Navbar />
       <main 
         className="flex-grow flex items-center justify-center px-4 bg-cover bg-center"
-        style={{ backgroundImage: "url(/wallpaper.jpg)" }}
       >
         <div className="w-full max-w-4xl mx-auto my-8 space-y-8">
           <h1 className="text-4xl font-bold text-center text-violet-800 mb-10 animate-fade-in">
@@ -26,6 +25,16 @@ function About() {
             </div>
           </section>
 
+          <section className="bg-white shadow-lg rounded-xl p-6 flex items-center space-x-6 hover:shadow-2xl transition-all duration-300 border-r-4 border-violet-500 animate-fade-in-up animation-delay-200">
+            <FaBuilding className="text-violet-500 text-5xl flex-shrink-0" />
+            <div>
+              <h2 className="text-xl font-semibold text-violet-600 mb-2">SLT – Digital Platform Division</h2>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Part of SLT, Sri Lanka’s leading telecom provider, our Digital Platform Division fosters innovation. Guided by mentor Janaka Harambearachchi, this project inspires the next generation of professionals.
+              </p>
+            </div>
+          </section>
+
           <section className="bg-white shadow-lg rounded-xl p-6 flex flex-row-reverse items-center space-x-6 space-x-reverse hover:shadow-2xl transition-all duration-300 border-l-4 border-teal-500 animate-fade-in-up animation-delay-100">
             <FaStar className="text-teal-500 text-5xl flex-shrink-0" />
             <div>
@@ -36,16 +45,6 @@ function About() {
                 <li><strong>Engagement Insights</strong>: Mentors monitor progress via an admin panel.</li>
                 <li><strong>Leaderboard</strong>: Compete and showcase your achievements.</li>
               </ul>
-            </div>
-          </section>
-
-          <section className="bg-white shadow-lg rounded-xl p-6 flex items-center space-x-6 hover:shadow-2xl transition-all duration-300 border-r-4 border-violet-500 animate-fade-in-up animation-delay-200">
-            <FaBuilding className="text-violet-500 text-5xl flex-shrink-0" />
-            <div>
-              <h2 className="text-xl font-semibold text-violet-600 mb-2">SLT – Digital Platform Division</h2>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Part of SLT, Sri Lanka’s leading telecom provider, our Digital Platform Division fosters innovation. Guided by mentor Janaka Harambearachchi, this project inspires the next generation of professionals.
-              </p>
             </div>
           </section>
 

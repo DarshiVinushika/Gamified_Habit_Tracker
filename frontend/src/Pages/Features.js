@@ -9,7 +9,6 @@ function Features() {
       <Navbar />
       <main 
         className="flex-grow flex items-center justify-center px-4 bg-cover bg-center"
-        style={{ backgroundImage: "url(/wallpaper.jpg)" }}
       >
         <div className="w-full max-w-5xl mx-auto my-8">
           <h1 className="text-4xl font-bold text-center text-indigo-800 mb-10 animate-fade-in">

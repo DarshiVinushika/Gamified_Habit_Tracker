@@ -42,7 +42,6 @@ function LoginPage() {
       <Navbar />
       <main 
         className="flex-grow flex items-center justify-center px-4 bg-cover bg-center"
-        style={{ backgroundImage: "url(/wallpaper.jpg)" }}
       >
         <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
           <h2 className="text-2xl font-bold text-center text-indigo-700 mb-6">
