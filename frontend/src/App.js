@@ -1,7 +1,9 @@
 import React from "react";
 import Home from "./Pages/Home";
 import Register from "./Pages/Register";
-import Dashboard from "./Pages/Dashboard";
+import AdminDashboard from "./Pages/AdminDashboard";
+import InternDashboard from "./Pages/InternDashboard";
+import About from "./Pages/About";
 import LoginPage from "./Pages/LoginPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -20,8 +22,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/AdminDashboard" element={<AdminDashboard />} />
+          <Route path="/InternDashboard" element={<InternDashboard />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/About" element={<About />} />
           <Route path="/admin/badges" element={<BadgesManagementPage />} />
         </Routes>
       </BrowserRouter>

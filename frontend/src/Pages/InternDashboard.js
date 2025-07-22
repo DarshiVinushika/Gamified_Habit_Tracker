@@ -2,14 +2,14 @@ import React from 'react'
 import Footer from '../Components/Footer'
 import Navbar from '../Components/Navbar'
 
-function Dashboard() {
+function InternDashboard() {
   return (
     <div>
       <Navbar/>
-      <h1>This is the dashboard</h1>
+      <h1>Intern Dashboard</h1>
       <Footer/>
     </div>
   )
 }
 
-export default Dashboard
+export default InternDashboard

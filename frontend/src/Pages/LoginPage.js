@@ -23,10 +23,15 @@ function LoginPage() {
       const data = await loginUser(email, password);
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data));
-      navigate("/dashboard");
+      // Redirect based on role
+      if (data.role === "admin") {
+        navigate("/AdminDashboard"); // Adjust to your admin route
+      } else {
+        navigate("/InternDashboard");
+      }
       toast.success("Logged in successfully!");
     } catch (err) {
-      setErrorMsg(err);
+      setErrorMsg(err || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -35,17 +40,17 @@ function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-
-      <main className="flex-grow flex items-center justify-center px-4 bg-gray-100">
+      <main 
+        className="flex-grow flex items-center justify-center px-4 bg-cover bg-center"
+        style={{ backgroundImage: "url(/wallpaper.jpg)" }}
+      >
         <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
           <h2 className="text-2xl font-bold text-center text-indigo-700 mb-6">
             Login
           </h2>
-
           {errorMsg && (
             <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>
           )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -60,7 +65,6 @@ function LoginPage() {
                 className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Password
@@ -85,7 +89,6 @@ function LoginPage() {
                 </button>
               </div>
             </div>
-
             <button
               disabled={loading}
               type="submit"
@@ -118,7 +121,6 @@ function LoginPage() {
           </form>
         </div>
       </main>
-
       <Footer />
     </div>
   );
