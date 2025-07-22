@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Nav from "../Components/Nav";
 import Footer from "../Components/Footer";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -11,24 +12,29 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMsg("");
+    setLoading(true);
 
     try {
       await axios.post("http://localhost:8080/api/users/register", {
         name,
         email,
         password,
-        role: "intern" // or "admin" if needed
+        role: "intern",
       });
 
       navigate("/dashboard");
+      toast.success("Registered successfully!");
     } catch (err) {
       const message =
         err.response?.data?.message || "Registration failed. Try again.";
       setErrorMsg(message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,11 +48,15 @@ const Register = () => {
             Create an Account
           </h2>
 
-          {errorMsg && <p className="text-red-500 text-sm text-center mb-4">{errorMsg}</p>}
+          {errorMsg && (
+            <p className="text-red-500 text-sm text-center mb-4">{errorMsg}</p>
+          )}
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Name
+              </label>
               <input
                 type="text"
                 placeholder="Your name"
@@ -58,7 +68,9 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
               <input
                 type="email"
                 placeholder="you@example.com"
@@ -70,7 +82,9 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
               <input
                 type="password"
                 placeholder="Create a password"
@@ -83,9 +97,35 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700 transition"
+              disabled={loading}
+              className={`w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700 transition
+    flex justify-center items-center
+    ${loading ? "opacity-50 cursor-not-allowed" : ""}
+  `}
             >
-              Register
+              {loading && (
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              )}
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
         </div>
