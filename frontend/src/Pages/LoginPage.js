@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { loginUser } from "../Services/authService";
 import { useNavigate } from "react-router-dom";
-import Nav from "../Components/Nav";
 import Footer from "../Components/Footer";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Navbar from "../Components/Navbar";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ function LoginPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Nav />
+      <Navbar />
 
       <main className="flex-grow flex items-center justify-center px-4 bg-gray-100">
         <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">

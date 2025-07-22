@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Nav from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Navbar from "../Components/Navbar";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const Register = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Nav />
+      <Navbar />
 
       <main className="flex-grow flex items-center justify-center px-4">
         <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
