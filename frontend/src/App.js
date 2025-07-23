@@ -4,6 +4,7 @@ import Register from "./Pages/Register";
 import AdminDashboard from "./Pages/AdminDashboard";
 import InternDashboard from "./Pages/InternDashboard";
 import About from "./Pages/About";
+import Features from "./Pages/Features";
 import LoginPage from "./Pages/LoginPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -26,6 +27,7 @@ function App() {
           <Route path="/InternDashboard" element={<InternDashboard />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/About" element={<About />} />
+          <Route path="/Features" element={<Features />} />
           <Route path="/admin/badges" element={<BadgesManagementPage />} />
         </Routes>
       </BrowserRouter>

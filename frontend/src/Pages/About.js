@@ -1,62 +1,99 @@
-import React from 'react';
-import Navbar from '../Components/Navbar';
-import Footer from '../Components/Footer';
+import React from "react";
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
+import { FaRocket, FaStar, FaBuilding, FaUserPlus } from "react-icons/fa";
 
 function About() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main 
-        className="flex-grow flex items-center justify-center px-4 bg-cover bg-center"
-        style={{ backgroundImage: "url(/wallpaper.jpg)" }}
-      >
-        <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-4xl mx-auto my-8">
-          <h1 className="text-3xl font-bold text-center text-indigo-700 mb-6">
+      <main className="flex-grow flex items-center justify-center px-4 bg-white">
+        <div className="w-full max-w-4xl mx-auto my-8 space-y-8">
+          <h1 className="text-4xl font-bold text-center text-violet-800 mb-10 animate-fade-in">
             About the Gamified Habit Tracker
           </h1>
-          <div className="space-y-6 text-gray-700">
-            <section>
-              <h2 className="text-2xl font-semibold text-indigo-600 mb-3">Our Mission</h2>
-              <p className="text-lg leading-relaxed">
-                The Gamified Habit Tracker, developed by the Intern Software Development Team at SLT – Digital Platform Division, is designed to empower interns and junior employees to build positive work habits and boost engagement. By integrating gamification elements like XP rewards, badges, and streaks, we aim to make professional growth fun, motivating, and measurable.
+
+          <section className="bg-white shadow-lg rounded-xl p-6 flex flex-row items-center hover:shadow-2xl transition-all duration-300 border-r-4 border-pink-500 animate-fade-in-up">
+            <FaRocket className="text-pink-500 text-5xl flex-shrink-0 mr-6" />
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-pink-600 mb-2">
+                Our Mission
+              </h2>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Developed by SLT’s Intern Software Development Team, our
+                platform empowers interns and junior employees to build positive
+                work habits through gamification, making professional growth fun
+                and measurable.
               </p>
-            </section>
-            <section>
-              <h2 className="text-2xl font-semibold text-indigo-600 mb-3">What We Offer</h2>
-              <ul className="list-disc list-inside space-y-2">
-                <li><strong>Habit Tracking</strong>: Log daily and weekly work, learning, and collaboration habits to stay consistent.</li>
-                <li><strong>Gamified Experience</strong>: Earn XP, level up, and unlock badges for achieving milestones.</li>
-                <li><strong>Engagement Insights</strong>: Mentors can monitor progress and assign challenges through a dedicated admin panel.</li>
-                <li><strong>Community Leaderboard</strong>: Compete with peers and showcase your progress.</li>
+            </div>
+          </section>
+
+          <section className="bg-white shadow-lg rounded-xl p-6 flex flex-row items-center hover:shadow-2xl transition-all duration-300 border-l-4 border-teal-500 animate-fade-in-up animation-delay-100">
+            <FaStar className="text-teal-500 text-5xl flex-shrink-0 mr-6" />
+            <div className="text-center max-w-md mx-auto">
+              <h2 className="text-xl font-semibold text-teal-600 mb-2">
+                What We Offer
+              </h2>
+              <ul className="list-disc list-inside text-gray-600 text-sm space-y-2 leading-relaxed">
+                <li>
+                  <strong>Habit Tracking</strong>: Log work, learning, and
+                  collaboration habits.
+                </li>
+                <li>
+                  <strong>Gamified Experience</strong>: Earn XP, level up, and
+                  unlock badges.
+                </li>
+                <li>
+                  <strong>Engagement Insights</strong>: Mentors monitor progress
+                  via an admin panel.
+                </li>
+                <li>
+                  <strong>Leaderboard</strong>: Compete and showcase your
+                  achievements.
+                </li>
               </ul>
-            </section>
-            <section>
-              <h2 className="text-2xl font-semibold text-indigo-600 mb-3">About SLT – Digital Platform Division</h2>
-              <p className="text-lg leading-relaxed">
-                As part of SLT, Sri Lanka’s leading telecommunications provider, the Digital Platform Division is committed to fostering innovation and nurturing talent. This project, guided by our mentor Janaka Harambearachchi, reflects our dedication to creating tools that inspire and empower the next generation of professionals.
+            </div>
+          </section>
+
+          <section className="bg-white shadow-lg rounded-xl p-6 flex flex-row items-center hover:shadow-2xl transition-all duration-300 border-r-4 border-violet-500 animate-fade-in-up animation-delay-200">
+            <FaBuilding className="text-violet-500 text-5xl flex-shrink-0 mr-6" />
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-violet-600 mb-2">
+                SLT – Digital Platform Division
+              </h2>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Part of SLT, Sri Lanka’s leading telecom provider, our Digital
+                Platform Division fosters innovation. Guided by mentor Janaka
+                Harambearachchi, this project inspires the next generation of
+                professionals.
               </p>
-            </section>
-            <section className="text-center">
-              <h2 className="text-2xl font-semibold text-indigo-600 mb-3">Join Us</h2>
-              <p className="text-lg leading-relaxed mb-4">
-                Ready to start your journey of growth and achievement? Log in or register to begin tracking your habits and earning rewards!
-              </p>
-              <div className="flex justify-center space-x-4">
-                <a
-                  href="/login"
-                  className="px-6 py-2 rounded-full text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition"
-                >
-                  Login
-                </a>
-                <a
-                  href="/register"
-                  className="px-6 py-2 rounded-full text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition"
-                >
-                  Register
-                </a>
-              </div>
-            </section>
-          </div>
+            </div>
+          </section>
+
+          <section className="bg-gradient-to-r from-pink-100 to-teal-100 shadow-lg rounded-xl p-6 text-center hover:shadow-2xl transition-all duration-300 animate-fade-in-up animation-delay-400 mt-6">
+            <FaUserPlus className="text-indigo-600 text-5xl mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-indigo-600 mb-3">
+              Join Us
+            </h2>
+            <p className="text-gray-600 text-sm mb-4">
+              Transform your work habits! Join now to track, earn rewards, and
+              grow.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <a
+                href="/login"
+                className="px-6 py-2 rounded-full text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition hover:scale-105"
+              >
+                Login
+              </a>
+              <a
+                href="/register"
+                className="px-6 py-2 rounded-full text-white font-semibold bg-indigo-600 hover:bg-indigo-700 transition hover:scale-105"
+              >
+                Register
+              </a>
+            </div>
+          </section>
         </div>
       </main>
       <Footer />
