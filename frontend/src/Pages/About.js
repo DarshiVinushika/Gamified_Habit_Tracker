@@ -5,9 +5,12 @@ import { FaRocket, FaStar, FaBuilding, FaUserPlus } from "react-icons/fa";
 
 function About() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen"
+      style={{
+        background: "radial-gradient(closest-side at 50% 50%, #3B82F6 0%, #8B5CF6 100%)",
+    }}>
       <Navbar />
-      <main className="flex-grow flex items-center justify-center px-4 bg-white">
+      <main className="flex-grow flex items-center justify-center px-4">
         <div className="w-full max-w-4xl mx-auto my-8 space-y-8">
           <h1 className="text-4xl font-bold text-center text-violet-800 mb-10 animate-fade-in">
             About the Gamified Habit Tracker
