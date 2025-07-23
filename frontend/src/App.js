@@ -1,7 +1,7 @@
 import React from "react";
 import Home from "./Pages/Home";
 import Register from "./Pages/Register";
-import AdminDashboard from "./Pages/AdminDashboard";
+import AdminDashboard from "./AdminPages/AdminDashboard";
 import InternDashboard from "./Pages/InternDashboard";
 import About from "./Pages/About";
 import Features from "./Pages/Features";
@@ -10,7 +10,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BadgesManagementPage from "./AdminPages/BadgesManagementPage";
-
 
 function App() {
   return (

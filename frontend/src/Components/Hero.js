@@ -47,7 +47,7 @@ const Hero = () => {
       className="relative"
       style={{
         backgroundImage: `url(${heroBg1})`,
-        minHeight: "650px",
+        minHeight: "800px",
         minWidth: "100%",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -56,39 +56,39 @@ const Hero = () => {
       <Navbar />
 
       <div className="flex items-between justify-between pr-16 pt-16">
-        <div className="pl-48 pt-24 amaranth-bold text-5xl text-[#8B5CF6]">
-          <h1>
+        <div className="pl-48 pt-24 amaranth-bold text-6xl text-[#8B5CF6]">
+          <p className="relative left-16 top-16">
             Level Up Your{" "}<br/>
             <span className="transition-all duration-500 ease-in-out text-[#3B82F6] pl-52">
               {displayedText}
               <span className="animate-pulse"></span>
             </span>
-          </h1>
+          </p>
         </div>
         <div>
           <h1
-            className="text-4xl md:text-7xl mb-6 amaranth-bold text-[#473b3b] drop-shadow-lg text-center"
+            className="text-4xl md:text-8xl mb-7 mt-7 amaranth-bold text-[#473b3b] drop-shadow-lg text-center"
           >
             Level Up Your <br />
             Internship Journey
           </h1>
-          <h2 className="text-xl md:text-2xl text-white font-semibold mb-4 drop-shadow text-center pr-12">
+          <h2 className="text-xl md:text-3xl text-white font-semibold mb-5 drop-shadow text-center pr-12">
             Transform habits into XP, streaks into success
           </h2>
-          <p className="text-white/90 mb-8 max-w-xl drop-shadow text-center">
+          <p className="text-white/90 mb-9 max-w-2xl drop-shadow text-center text-xl">
             Join the gamified habit tracking platform designed specifically for SLT interns. Build positive work habits,
             earn XP, unlock badges, and climb the leaderboard while developing skills that matter.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/register"
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-full shadow transition flex items-center justify-center text-lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-full shadow transition flex items-center justify-center text-2xl"
             >
               <span className="mr-2">🚀</span> Start your journey
             </Link>
             <Link
               to="/features"
-              className="border border-white text-white font-semibold px-8 py-3 rounded-full shadow transition hover:bg-white hover:text-purple-600 flex items-center justify-center text-lg"
+              className="border border-white text-white font-semibold px-8 py-3 rounded-full shadow transition hover:bg-white hover:text-purple-600 flex items-center justify-center text-2xl"
             >
               <span className="mr-2">🛠️</span> Explore Features
             </Link>

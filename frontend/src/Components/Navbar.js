@@ -12,14 +12,14 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="w-full h-20 flex items-center justify-between px-6 md:px-12 bg-gradient-to-r from-indigo-900 via-purple-900 to-teal-900 backdrop-blur-md shadow-[0_4px_15px_rgba(145,70,255,0.3)] border-b-2 border-teal-500/50">
+    <div className="w-full h-20 flex items-center justify-between px-6 md:px-12 bg-transparent backdrop-blur-md shadow-[0_4px_5px_rgba(14,7,25,0.3)] ">
       <div className="flex items-center space-x-3">
         <img
           src={logo}
           alt="HabitHero Logo"
           className="h-12 rounded-full shadow-md hover:scale-110 transition-transform duration-300 border border-purple-700"
         />
-        <span className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-pink-400 text-transparent bg-clip-text adamina-regular">
+        <span className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-pink-600 text-transparent bg-clip-text adamina-regular">
           HabitHero
         </span>
       </div>
@@ -63,7 +63,7 @@ const Navbar = () => {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-gradient-to-r from-indigo-900/95 to-purple-900/95 backdrop-blur-md flex flex-col items-center space-y-4 py-6 z-50 animate-slide-in-right">
+        <div className="md:hidden absolute top-20 left-0 w-full bg-gradient-to-r from-indigo-950 to-purple-950 backdrop-blur-md flex flex-col items-center space-y-4 py-6 z-50 animate-slide-in-right">
           <Link
             to="/"
             className={`${navLinkClass} block w-full text-center py-2 bg-indigo-800/30 rounded-lg hover:bg-indigo-800/50 transition-colors duration-300`}

@@ -11,7 +11,10 @@ import {
 
 function Features() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen"
+      style={{
+        background: "radial-gradient(closest-side at 50% 50%, #3B82F6 0%, #8B5CF6 100%)",
+    }}>
       <Navbar />
       <main className="flex-grow flex items-center justify-center px-4 bg-cover bg-center">
         <div className="w-full max-w-5xl mx-auto my-8">
