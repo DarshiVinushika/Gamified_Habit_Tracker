@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BadgesManagementPage from "./AdminPages/BadgesManagementPage";
+import HabbitManagement from "./AdminPages/HabbitManagement";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/About" element={<About />} />
           <Route path="/Features" element={<Features />} />
           <Route path="/admin/badges" element={<BadgesManagementPage />} />
+          <Route path="/admin/habits" element={<HabbitManagement />} />
         </Routes>
       </BrowserRouter>
     </>

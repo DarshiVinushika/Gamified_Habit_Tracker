@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const badgesRoute = require('./routes/badgesRoute');
 const userRoutes = require("./routes/UserRoutes");
+const habitRoutes = require("./routes/habitRoutes");
 
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/api/badges', badgesRoute);
 app.use("/api/users", userRoutes);
+app.use("/api/habits", habitRoutes);
 app.use("/uploads", express.static("uploads"));
 
 connectDB(); // call the database connection function
