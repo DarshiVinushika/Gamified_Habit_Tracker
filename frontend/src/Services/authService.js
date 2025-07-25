@@ -10,3 +10,10 @@ export const loginUser = async (email, password) => {
     throw err.response.data.message || "Login failed";
   }
 };
+
+export const googleLogin = async (credential) => {
+  const response = await axios.post("http://localhost:8080/api/users/google", {
+    credential,
+  });
+  return response.data;
+};

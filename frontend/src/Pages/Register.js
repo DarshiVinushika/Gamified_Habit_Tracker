@@ -21,7 +21,7 @@ const Register = () => {
     e.preventDefault();
     setErrorMsg("");
     setLoading(true);
-  
+
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -29,17 +29,17 @@ const Register = () => {
       formData.append("password", password);
       formData.append("role", "intern");
       if (profilePicFile) {
-        formData.append("profilePic", profilePicFile); // 👈 field name should match backend
+        formData.append("profilePic", profilePicFile);
       }
-  
+
       await axios.post("http://localhost:8080/api/users/register", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       toast.success("Registered successfully!");
-      navigate("/dashboard");
+      navigate("/InternDashboard"); // Updated to align with intern role
     } catch (err) {
       const message =
         err.response?.data?.message || "Registration failed. Try again.";
@@ -48,16 +48,13 @@ const Register = () => {
       setLoading(false);
     }
   };
-  
 
   return (
-    <div className="flex flex-col min-h-screen"
-      style={{
-        background: "radial-gradient(closest-side at 50% 50%, #3B82F6 0%, #8B5CF6 100%)",
-    }}>
+    <div
+      className="flex flex-col min-h-screen"
+    >
       <Navbar />
-
-      <main className="flex-grow flex items-center justify-center px-4 my-10">
+      <main className="flex-grow flex items-center justify-center px-4 my-10 md:ml-64">
         <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
           <h2 className="text-2xl font-bold text-center text-indigo-700 mb-6">
             Create an Account

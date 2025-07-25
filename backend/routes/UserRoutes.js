@@ -9,14 +9,18 @@ const {
   getUserById,
   getCurrentUser,
   uploadProfilePic,
+  googleLogin,
 } = require("../controllers/UserController");
 
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
-const upload = require("../middleware/uploadMiddleware"); // ✅ only declare once!
+const upload = require("../middleware/uploadMiddleware"); 
 
 // Public routes
 router.post("/register", upload.single("profilePic"), registerUser);
 router.post("/login", loginUser);
+
+// Google login route
+router.post("/google", googleLogin);
 
 // Admin-only routes
 router.get("/", authMiddleware, requireRole("admin"), getAllUsers);
