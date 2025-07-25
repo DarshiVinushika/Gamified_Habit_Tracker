@@ -11,12 +11,12 @@ import {
 
 function Features() {
   return (
-    <div className="flex flex-col min-h-screen"
-      style={{
-        background: "radial-gradient(closest-side at 50% 50%, #3B82F6 0%, #8B5CF6 100%)",
-    }}>
+    <div
+      className="flex flex-col min-h-screen"
+    >
       <Navbar />
-      <main className="flex-grow flex items-center justify-center px-4 bg-cover bg-center">
+      {/* Added md:ml-64 to shift content right of sidebar on desktop */}
+      <main className="flex-grow flex items-center justify-center px-4 bg-cover bg-center md:ml-64">
         <div className="w-full max-w-5xl mx-auto my-8">
           <h1 className="text-4xl font-bold text-center text-indigo-800 mb-10 animate-fade-in">
             Discover Our Features

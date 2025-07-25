@@ -3,6 +3,56 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Google Login
+exports.googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body; // Google ID token from frontend
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { email, sub: googleId, name, picture } = payload;
+
+    // Check if user exists
+    let user = await User.findOne({ email });
+    if (!user) {
+      // Create new user if they don't exist
+      user = new User({
+        name,
+        email,
+        googleId,
+        authSource: "google",
+        profilePic: picture,
+        role: "intern", // Default role
+      });
+      await user.save();
+    } else if (user.authSource !== "google") {
+      // Prevent email conflicts with email/password users
+      return res.status(400).json({ message: "Email already registered with email/password login" });
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.status(200).json({
+      message: "Google login successful",
+      userId: user._id,
+      name: user.name,
+      role: user.role,
+      token,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
 
 // Register
 exports.registerUser = async (req, res) => {

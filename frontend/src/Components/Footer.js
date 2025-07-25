@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-r from-purple-800 to-indigo-900 text-white pt-10 pb-6">
+    // Added md:ml-64 to shift footer right of sidebar on desktop
+    <footer className="bg-gradient-to-r from-purple-800 to-indigo-900 text-white pt-10 pb-6 md:ml-64">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm">
-        
         {/* About */}
         <div>
           <h1 className="text-xl font-bold mb-2">🎯 HabitTracker</h1>
