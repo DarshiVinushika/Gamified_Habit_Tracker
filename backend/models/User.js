@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   googleId: { type: String, unique: true, sparse: true }, 
   authSource: { type: String, enum: ["email", "google"], default: "email" },
   xp: { type: Number, default: 0 },
+  completedHabits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Habit" }],
   level: { type: Number, default: 1 },
   streak: { type: Number, default: 0 },
   badges: [{ type: mongoose.Schema.Types.ObjectId, ref: "Badge" }],
