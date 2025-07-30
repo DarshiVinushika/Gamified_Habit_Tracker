@@ -56,8 +56,8 @@ const Hero = () => {
       <Navbar />
 
       <div className="flex items-between justify-between pr-16 pt-16">
-        <div className="pl-48 pt-24 amaranth-bold text-6xl text-[#8B5CF6]">
-          <p className="relative left-16 top-16">
+        <div className="pl-5 pt-32 amaranth-bold text-6xl text-[#8B5CF6]">
+          <p className="relative  top-16">
             Level Up Your{" "}<br/>
             <span className="transition-all duration-500 ease-in-out text-[#3B82F6] pl-52">
               {displayedText}

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Sidebar from "../Components/Sidebar";
+
+import Navbar from "../Components/Navbar";
+import Footer from "../Components/Footer";
 
 const MyBadges = () => {
   const [allBadges, setAllBadges] = useState([]);
@@ -38,7 +40,7 @@ const MyBadges = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-400 to-purple-400">
-      <Sidebar />
+      <Navbar />
       <div className="flex-1 p-8">
         <h1 className="text-3xl font-bold mb-8 text-white">My Badges</h1>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -60,6 +62,7 @@ const MyBadges = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
