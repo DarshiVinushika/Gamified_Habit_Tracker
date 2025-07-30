@@ -10,12 +10,6 @@ const {
   getCurrentUser,
   uploadProfilePic,
   googleLogin,
-  addXpToUser,
-  getCompletedHabits,
-  updateCompletedHabits,
-  getLoggedInInternDetails,
-  updateXpAndLevel,
-  recalculateLevel
 } = require("../controllers/UserController");
 
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
@@ -45,12 +39,4 @@ router.post(
   uploadProfilePic
 );
 
-// Add XP (authenticated user)
-router.post("/add-xp", authMiddleware, addXpToUser);
-
-router.get("/me/completed-habits", authMiddleware, getCompletedHabits);
-router.post("/me/completed-habits", authMiddleware, updateCompletedHabits);
-router.get("/me/intern",  authMiddleware, getLoggedInInternDetails);
-router.patch("/me/xp-level", authMiddleware, updateXpAndLevel);
-router.put("/me/recalculate-level", authMiddleware, recalculateLevel);
 module.exports = router;
