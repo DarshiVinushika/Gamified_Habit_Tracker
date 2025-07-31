@@ -13,6 +13,7 @@ import BadgesManagementPage from "./AdminPages/BadgesManagementPage";
 import MyBadges from "./Pages/MyBadges";
 import HabitManagementPage from "./AdminPages/HabitManagementPage";
 import HabitCategories from "./Pages/HabitCategories";
+import Leaderboard from "./Pages/Leaderboard";
 
 // Import UserProvider from your context file
 import { UserProvider } from "./Components/UserContext"; // Adjust path if needed
@@ -37,7 +38,8 @@ function App() {
             <Route path="/badges" element={<MyBadges />} />
             <Route path="/admin/habits" element={<HabitManagementPage />} />
             <Route path="/habit-categories" element={<HabitCategories />} />
-            <Route path="/leaderboard" element={<InternDashboard />} />
+            <Route path="/dashboard" element={<InternDashboard />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

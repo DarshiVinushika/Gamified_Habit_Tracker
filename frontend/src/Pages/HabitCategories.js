@@ -1,4 +1,3 @@
-// src/Pages/HabitCategories.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -36,7 +35,7 @@ function HabitCategories() {
   const [habits, setHabits] = useState([]);
   const [checkedHabits, setCheckedHabits] = useState({});
 
-  const { user, updateUserXpAndStreak } = useUser();
+  const { updateUserXpAndStreak } = useUser();
 
   useEffect(() => {
     axios
@@ -119,30 +118,33 @@ function HabitCategories() {
       })),
   }));
 
-  return (
-    <div className="flex flex-col min-h-screen">
+return (
+    <div className="min-h-screen bg-gradient-to-br from-[#f3e5f5] via-[#bb86fc] to-[#7b1fa2] text-white font-sans">
       <Navbar />
       <main className="flex flex-col items-center flex-grow py-8 md:ml-64">
-        <div className="w-full max-w-2xl space-y-8">
+        <div className="w-full max-w-4xl space-y-10 bg-[rgba(26,0,37,0.4)] p-10 rounded-2xl border-2 border-[#e0c4ff] shadow-[0_0_40px_rgba(156,39,176,0.9)] text-white font-['Press_Start_2P'] backdrop-blur-md">
+
           <UserProfileCard />
           {habitsByCategory.map(
             (cat) =>
               cat.habits.length > 0 && (
-                <HabitCategoryBox
-                  key={cat.key}
-                  title={cat.title}
-                  icon={cat.icon}
-                  habits={cat.habits}
-                  checkedHabits={checkedHabits}
-                  onHabitCheck={handleHabitCheck}
-                />
+                <div className="ml-16">
+                  <HabitCategoryBox
+                    key={cat.key}
+                    title={cat.title}
+                    icon={cat.icon}
+                    habits={cat.habits}
+                    checkedHabits={checkedHabits}
+                    onHabitCheck={handleHabitCheck}
+                  />
+                </div>
               )
           )}
         </div>
       </main>
       <Footer />
     </div>
-  );
+);
 }
 
 export default HabitCategories;

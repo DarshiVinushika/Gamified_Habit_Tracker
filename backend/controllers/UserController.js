@@ -452,3 +452,23 @@ exports.recalculateLevel = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+// Controller to get leaderboard users in descending order by xp
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const users = await User.find()
+      .select("name xp level streak badges")
+      .lean(); // Use lean for faster response
+
+    const sortedUsers = users
+      .map(user => ({
+        ...user,
+        badgeCount: user.badges?.length || 0,
+      }))
+      .sort((a, b) => b.xp - a.xp); // Sort by xp descending
+
+    res.status(200).json({ users: sortedUsers });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};

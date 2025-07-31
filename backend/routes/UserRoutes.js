@@ -15,7 +15,8 @@ const {
   updateCompletedHabits,
   getLoggedInInternDetails,
   updateXpAndLevel,
-  recalculateLevel
+  recalculateLevel,
+  getLeaderboard
 } = require("../controllers/UserController");
 
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
@@ -53,4 +54,6 @@ router.post("/me/completed-habits", authMiddleware, updateCompletedHabits);
 router.get("/me/intern",  authMiddleware, getLoggedInInternDetails);
 router.patch("/me/xp-level", authMiddleware, updateXpAndLevel);
 router.put("/me/recalculate-level", authMiddleware, recalculateLevel);
+
+router.get("/leaderboard", getLeaderboard);
 module.exports = router;
