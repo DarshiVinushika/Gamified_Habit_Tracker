@@ -10,10 +10,21 @@ const {
   getCurrentUser,
   uploadProfilePic,
   googleLogin,
+<<<<<<< Updated upstream
+=======
+  addXpToUser,
+  getCompletedHabits,
+  updateCompletedHabits,
+  getLoggedInInternDetails,
+  updateXpAndLevel,
+  recalculateLevel,
+  getLeaderboard
+>>>>>>> Stashed changes
 } = require("../controllers/UserController");
 
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware"); 
+
 
 // Public routes
 router.post("/register", upload.single("profilePic"), registerUser);
@@ -26,6 +37,7 @@ router.post("/google", googleLogin);
 router.get("/", authMiddleware, requireRole("admin"), getAllUsers);
 router.delete("/:id", authMiddleware, requireRole("admin"), deleteUser);
 
+router.get("/leaderboard", getLeaderboard);
 // Authenticated user routes
 router.get("/:id", authMiddleware, getUserById);
 router.put("/:id", authMiddleware, updateUser);

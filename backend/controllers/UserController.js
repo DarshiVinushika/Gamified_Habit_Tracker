@@ -271,3 +271,198 @@ exports.uploadProfilePic = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+<<<<<<< Updated upstream
+=======
+
+
+exports.addXpToUser = async (req, res) => {
+  try {
+    const { xp } = req.body;
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.xp += xp;
+    await user.save();
+
+    res.status(200).json({ message: "XP added", newXp: user.xp });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Get user's completed habits
+exports.getCompletedHabits = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate("completedHabits", "name xpValue");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ completedHabits: user.completedHabits });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Update user's completed habits (add or remove one habit)
+exports.updateCompletedHabits = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { habitId, completed } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const habit = await Habit.findById(habitId);
+    if (!habit) return res.status(404).json({ message: "Habit not found" });
+
+    const isCompletedAlready = user.completedHabits.some(
+      (id) => id.toString() === habitId
+    );
+
+    if (completed && !isCompletedAlready) {
+      user.completedHabits.push(habitId);
+      user.xp += habit.xpValue;
+    } else if (!completed && isCompletedAlready) {
+      user.completedHabits = user.completedHabits.filter(
+        (id) => id.toString() !== habitId
+      );
+      user.xp = Math.max(0, user.xp - habit.xpValue);
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: `Habit ${completed ? "added" : "removed"} successfully`,
+      newXp: user.xp,
+      completedHabits: user.completedHabits,
+    });
+  } catch (err) {
+    console.error("Error updating completed habits:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+// Get Logged-in Intern Details Only
+exports.getLoggedInInternDetails = async (req, res) => {
+  try {
+    // Check if user is authenticated
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Fetch user from DB
+    const user = await User.findById(req.user.userId).select(
+      "_id name email role xp level streak profilePic"
+    );
+
+    // Check role
+    if (!user || user.role !== "intern") {
+      return res.status(403).json({ message: "Access denied: Not an intern" });
+    }
+
+    res.status(200).json({
+      message: "Intern details fetched successfully",
+      intern: user,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+exports.updateXpAndLevel = async (req, res) => {
+  try {
+    const { streakChange } = req.body;
+
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Only update streak (if needed)
+    if (streakChange) {
+      user.streak = (user.streak || 0) + streakChange;
+    }
+
+    // LEVEL CALCULATION BASED ON TOTAL XP ONLY (no XP change here)
+    const totalXp = user.xp || 0;
+    const baseXp = 100;
+    let level = 1;
+    let xpNeeded = 0;
+
+    while (totalXp >= xpNeeded + level * baseXp) {
+      xpNeeded += level * baseXp;
+      level++;
+    }
+
+    user.level = level;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Level and streak updated",
+      xp: user.xp,
+      level: user.level,
+      streak: user.streak,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+exports.recalculateLevel = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    let xp = user.xp || 0;
+    let level = 1;
+    let xpForPreviousLevels = 0;
+    let xpNeededForLevel = level * 100;
+
+    while (xp >= xpForPreviousLevels + xpNeededForLevel) {
+      xpForPreviousLevels += xpNeededForLevel;
+      level++;
+      xpNeededForLevel = level * 100;
+    }
+
+    if (user.level !== level) {
+      user.level = level;
+      await user.save();
+    }
+
+    return res.status(200).json({ message: "Level updated", level });
+  } catch (error) {
+    console.error("Level recalculation failed:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+// Controller to get leaderboard users in descending order by xp
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const users = await User.find()
+      .select("name xp level streak badges")
+      .lean(); // Use lean for faster response
+
+    const sortedUsers = users
+      .map(user => ({
+        ...user,
+        badgeCount: user.badges?.length || 0,
+      }))
+      .sort((a, b) => b.xp - a.xp); // Sort by xp descending
+
+    res.status(200).json({ users: sortedUsers });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+
+>>>>>>> Stashed changes
