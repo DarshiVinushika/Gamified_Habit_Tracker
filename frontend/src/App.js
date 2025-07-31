@@ -14,7 +14,9 @@ import BadgesManagementPage from "./AdminPages/BadgesManagementPage";
 import MyBadges from "./Pages/MyBadges";
 import HabitManagementPage from "./AdminPages/HabitManagementPage";
 import HabitCategories from "./Pages/HabitCategories";
+import Leaderboard from "./Pages/Leaderboard";
 import UserManagementPage from "./AdminPages/UserManagementPage";  // ✅ Moved here
+
 
 import { UserProvider } from "./Components/UserContext";  // ✅ Also here at the top
 
@@ -36,8 +38,13 @@ function App() {
             <Route path="/badges" element={<MyBadges />} />
             <Route path="/admin/habits" element={<HabitManagementPage />} />
             <Route path="/habit-categories" element={<HabitCategories />} />
-            <Route path="/leaderboard" element={<InternDashboard />} />
+
+            <Route path="/dashboard" element={<InternDashboard />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+
+            
             <Route path="/admin/users" element={<UserManagementPage />} />
+
           </Routes>
         </BrowserRouter>
       </UserProvider>
