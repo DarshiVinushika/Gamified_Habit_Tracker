@@ -22,6 +22,7 @@ const {
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware"); 
 
+router.get("/leaderboard", getLeaderboard);
 // Public routes
 router.post("/register", upload.single("profilePic"), registerUser);
 router.post("/login", loginUser);
@@ -55,5 +56,5 @@ router.get("/me/intern",  authMiddleware, getLoggedInInternDetails);
 router.patch("/me/xp-level", authMiddleware, updateXpAndLevel);
 router.put("/me/recalculate-level", authMiddleware, recalculateLevel);
 
-router.get("/leaderboard", getLeaderboard);
+
 module.exports = router;
