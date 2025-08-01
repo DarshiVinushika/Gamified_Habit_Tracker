@@ -6,18 +6,18 @@ import { Link } from "react-router-dom";
 function AdminManagementPage() {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
-        const token = localStorage.getItem("token"); // Assumes token is stored on login
+        const token = localStorage.getItem("token");
         const res = await axios.get("http://localhost:8080/api/users", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        // Filter only admins
         const adminUsers = res.data.users.filter((user) => user.role === "admin");
         setAdmins(adminUsers);
       } catch (err) {
@@ -30,43 +30,58 @@ function AdminManagementPage() {
     fetchAdmins();
   }, []);
 
+  const filteredAdmins = admins.filter(
+    (admin) =>
+      admin.name.toLowerCase().includes(search.toLowerCase()) ||
+      admin.email.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="flex">
+    <div className="flex min-h-screen bg-gray-100" style={{ backgroundColor: "#E6E6FA" }}>
       <AdminSidebar />
-      <div className="p-6 flex-1">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-indigo-800">Admin Management</h1>
+      <div className="flex-1 p-8">
+        <h1 className="text-3xl font-bold text-purple-900 mb-6">Admin Management</h1>
+
+        <div className="flex justify-between items-center mb-4">
+          <input
+            className="border px-3 py-2 rounded w-80"
+            placeholder="Search by name or email"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <Link
             to="/register"
-            className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
-            Add New Admin
+            <span className="mr-2">➕</span> Add New Admin
           </Link>
         </div>
 
         {loading ? (
           <p>Loading admins...</p>
-        ) : admins.length === 0 ? (
-          <p>No admin users found.</p>
+        ) : filteredAdmins.length === 0 ? (
+          <p className="text-gray-500 text-center mt-6">No admin users found.</p>
         ) : (
-          <table className="w-full table-auto border border-gray-300">
-            <thead className="bg-indigo-100">
-              <tr>
-                <th className="px-4 py-2 border">Name</th>
-                <th className="px-4 py-2 border">Email</th>
-                <th className="px-4 py-2 border">Role</th>
-              </tr>
-            </thead>
-            <tbody>
-              {admins.map((admin) => (
-                <tr key={admin._id} className="text-center hover:bg-gray-50">
-                  <td className="px-4 py-2 border">{admin.name}</td>
-                  <td className="px-4 py-2 border">{admin.email}</td>
-                  <td className="px-4 py-2 border capitalize">{admin.role}</td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border">
+              <thead className="bg-purple-100">
+                <tr>
+                  <th className="border px-4 py-2">Name</th>
+                  <th className="border px-4 py-2">Email</th>
+                  <th className="border px-4 py-2">Role</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredAdmins.map((admin) => (
+                  <tr key={admin._id} className="text-center hover:bg-gray-50">
+                    <td className="border px-4 py-2">{admin.name}</td>
+                    <td className="border px-4 py-2">{admin.email}</td>
+                    <td className="border px-4 py-2 capitalize">{admin.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
