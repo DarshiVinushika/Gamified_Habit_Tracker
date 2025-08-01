@@ -15,15 +15,18 @@ import MyBadges from "./Pages/MyBadges";
 import HabitManagementPage from "./AdminPages/HabitManagementPage";
 import HabitCategories from "./Pages/HabitCategories";
 import Leaderboard from "./Pages/Leaderboard";
-import UserManagementPage from "./AdminPages/UserManagementPage";  // ✅ Moved here
-
-
-import { UserProvider } from "./Components/UserContext";  // ✅ Also here at the top
+import UserManagementPage from "./AdminPages/UserManagementPage";
+import AdminManagementPage from "./AdminPages/AdminManagementPage";
+import { UserProvider } from "./Components/UserContext";
 
 function App() {
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
       <UserProvider>
         <BrowserRouter>
           <Routes>
@@ -42,9 +45,8 @@ function App() {
             <Route path="/dashboard" element={<InternDashboard />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
 
-            
             <Route path="/admin/users" element={<UserManagementPage />} />
-
+            <Route path="/admin/admins" element={<AdminManagementPage />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>
