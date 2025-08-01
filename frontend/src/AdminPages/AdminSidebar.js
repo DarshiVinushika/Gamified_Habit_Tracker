@@ -32,6 +32,9 @@ const AdminSidebar = () => {
         <Link to="/admin/admins" className={linkClass("/admin/admins")}>
           Admin management
         </Link>
+        <Link to="/dashboard" className={linkClass("/dashboard")}>
+          Intern Dashboard
+        </Link>
       </nav>
     </aside>
   );
