@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "./UserContext";
 
 function formatDateWithSuffix(dateObj) {
@@ -14,12 +14,60 @@ function formatDateWithSuffix(dateObj) {
   else if (j === 3 && k !== 13) suffix = "rd";
 
   return `${day.toString().padStart(2, "0")}${suffix} of ${month}, ${year}`;
-  
 }
 
-
 const UserProfileCard = () => {
-  const { user, loadingUser, error, leveledUp } = useUser();
+  const { user, loadingUser, error, leveledUp, setUser } = useUser();
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [streakLoading, setStreakLoading] = useState(true);
+
+  // Fetch and recalculate streak when component mounts or user changes
+  useEffect(() => {
+    const fetchCurrentStreak = async () => {
+      if (!user) return;
+      
+      try {
+        setStreakLoading(true);
+        const token = localStorage.getItem("token");
+        const API_URL = process.env.REACT_APP_API_URL || "";
+        
+        const response = await fetch(`${API_URL}/api/users/streak`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setCurrentStreak(data.streak);
+          
+          // If streak was updated on backend, update the user context too
+          if (data.wasUpdated && setUser) {
+            setUser(prevUser => ({
+              ...prevUser,
+              streak: data.streak
+            }));
+          }
+        } else {
+          console.error("Failed to fetch streak");
+          // Fallback to user.streak if API call fails
+          setCurrentStreak(user.streak || 0);
+        }
+      } catch (error) {
+        console.error("Error fetching streak:", error);
+        // Fallback to user.streak if API call fails
+        setCurrentStreak(user.streak || 0);
+      } finally {
+        setStreakLoading(false);
+      }
+    };
+
+    if (user && !loadingUser) {
+      fetchCurrentStreak();
+    }
+  }, [user, loadingUser, setUser]);
 
   // ✅ Prevent rendering too early
   if (!user && loadingUser) {
@@ -80,7 +128,7 @@ const UserProfileCard = () => {
             <span className="font-bold text-blue-200 text-lg drop-shadow-[0_0_2px_rgba(59,130,246,0.3)]">Level {level}</span>
           </div>
           <div className="text-sm text-gray-400 mb-2">
-            <span>{totalXp}/{xpNeededForCurrentLevel} XP</span>
+            <span>{xpInCurrentLevel}/{xpNeededForCurrentLevel} XP</span>
           </div>
           <div className="text-lg font-semibold text-blue-200 drop-shadow-[0_0_2px_rgba(59,130,246,0.3)]">{user.name || "No name"}</div>
           <div className="text-sm text-gray-400">Today is {todayDate}</div>
@@ -88,7 +136,11 @@ const UserProfileCard = () => {
         <div className="flex flex-col items-center ml-4 space-y-4">
           <div className="bg-purple-500/20 rounded-xl px-4 py-2 flex flex-col items-center shadow-[0_0_5px_rgba(124,58,237,0.4)] border border-purple-400/50">
             <span className="text-3xl">🔥</span>
-            <span className="text-xl font-bold text-purple-200">{user.streak || 0}</span>
+            {streakLoading ? (
+              <div className="text-xl font-bold text-purple-200 animate-pulse">...</div>
+            ) : (
+              <span className="text-xl font-bold text-purple-200">{currentStreak}</span>
+            )}
             <span className="text-xs text-purple-200">days streak!</span>
           </div>
           <div className="bg-purple-500/20 rounded-xl px-4 py-2 flex flex-col items-center shadow-[0_0_5px_rgba(124,58,237,0.4)] border border-purple-400/50">
