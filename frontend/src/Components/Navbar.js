@@ -96,12 +96,6 @@ const Navbar = () => {
             >
               Login
             </Link>
-            <Link
-              to="/register"
-              className="px-6 py-2 rounded-full text-white font-semibold bg-gradient-to-r from-indigo-700 to-purple-700 shadow-lg hover:shadow-glow hover:from-indigo-800 hover:to-purple-800 transition-all duration-300 scale-100 hover:scale-105 hover:animate-pulse w-full text-center"
-            >
-              Register
-            </Link>
           </>
         )}
       </div>

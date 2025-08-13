@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
-import Footer from "../Components/Footer";
 
 const UserManagementPage = () => {
   const [users, setUsers] = useState([]);
@@ -83,7 +82,6 @@ const UserManagementPage = () => {
           </div>
         </main>
       </div>
-      <Footer />
     </div>
   );
 };
