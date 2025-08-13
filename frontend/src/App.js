@@ -1,4 +1,8 @@
 import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Home from "./Pages/Home";
 import Register from "./Pages/Register";
 import AdminDashboard from "./AdminPages/AdminDashboard";
@@ -6,24 +10,23 @@ import InternDashboard from "./Pages/InternDashboard";
 import About from "./Pages/About";
 import Features from "./Pages/Features";
 import LoginPage from "./Pages/LoginPage";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import BadgesManagementPage from "./AdminPages/BadgesManagementPage";
 import MyBadges from "./Pages/MyBadges";
 import HabitManagementPage from "./AdminPages/HabitManagementPage";
 import HabitCategories from "./Pages/HabitCategories";
 import Leaderboard from "./Pages/Leaderboard";
-
-// Import UserProvider from your context file
-import { UserProvider } from "./Components/UserContext"; // Adjust path if needed
+import UserManagementPage from "./AdminPages/UserManagementPage";
+import AdminManagementPage from "./AdminPages/AdminManagementPage";
+import { UserProvider } from "./Components/UserContext";
 
 function App() {
   return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
-
-      {/* Wrap BrowserRouter inside UserProvider */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+      />
       <UserProvider>
         <BrowserRouter>
           <Routes>
@@ -38,8 +41,12 @@ function App() {
             <Route path="/badges" element={<MyBadges />} />
             <Route path="/admin/habits" element={<HabitManagementPage />} />
             <Route path="/habit-categories" element={<HabitCategories />} />
+
             <Route path="/dashboard" element={<InternDashboard />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+
+            <Route path="/admin/users" element={<UserManagementPage />} />
+            <Route path="/admin/admins" element={<AdminManagementPage />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

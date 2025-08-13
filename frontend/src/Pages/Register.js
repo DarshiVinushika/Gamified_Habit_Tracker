@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Footer from "../Components/Footer";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Navbar from "../Components/Navbar";
+import AdminSidebar from "../AdminPages/AdminSidebar";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ const Register = () => {
       formData.append("name", name);
       formData.append("email", email);
       formData.append("password", password);
-      formData.append("role", "intern");
+      formData.append("role", "admin"); // changed from "intern" to "admin"
       if (profilePicFile) {
         formData.append("profilePic", profilePicFile);
       }
@@ -38,8 +37,8 @@ const Register = () => {
         },
       });
 
-      toast.success("Registered successfully!");
-      navigate("/InternDashboard"); // Updated to align with intern role
+      toast.success("Admin registered successfully!");
+      navigate("/admin/admins"); // Redirect to Admin Management Page
     } catch (err) {
       const message =
         err.response?.data?.message || "Registration failed. Try again.";
@@ -50,14 +49,12 @@ const Register = () => {
   };
 
   return (
-    <div
-      className="flex flex-col min-h-screen"
-    >
-      <Navbar />
-      <main className="flex-grow flex items-center justify-center px-4 my-10 md:ml-64">
+    <div className="flex min-h-screen bg-gray-100" style={{ backgroundColor: "#E6E6FA" }}>
+      <AdminSidebar />
+      <main className="flex-grow flex items-center justify-center px-4 py-10">
         <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
           <h2 className="text-2xl font-bold text-center text-indigo-700 mb-6">
-            Create an Account
+            Register New Admin
           </h2>
 
           {errorMsg && (
@@ -165,13 +162,11 @@ const Register = () => {
                   ></path>
                 </svg>
               )}
-              {loading ? "Registering..." : "Register"}
+              {loading ? "Registering..." : "Register Admin"}
             </button>
           </form>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

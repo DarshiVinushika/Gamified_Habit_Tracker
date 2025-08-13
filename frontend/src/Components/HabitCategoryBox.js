@@ -25,7 +25,10 @@ function HabitCategoryBox({
       </div>
       <div className="space-y-4">
         {habits.map((habit) => (
-          <div key={habit.name} className="flex items-center justify-between p-4 rounded-lg bg-gray-900/80 shadow-md hover:bg-purple-900/50 transition-all duration-200 hover:scale-[1.02]">
+          <div
+            key={habit.name}
+            className="flex items-center justify-between p-4 rounded-lg bg-gray-900/80 shadow-md hover:bg-purple-900/50 transition-all duration-200 hover:scale-[1.02]"
+          >
             <div className="flex items-center">
               <input
                 type="checkbox"
