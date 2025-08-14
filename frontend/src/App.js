@@ -11,13 +11,13 @@ import About from "./Pages/About";
 import Features from "./Pages/Features";
 import LoginPage from "./Pages/LoginPage";
 import BadgesManagementPage from "./AdminPages/BadgesManagementPage";
-import MyBadges from "./Pages/MyBadges";
 import HabitManagementPage from "./AdminPages/HabitManagementPage";
 import HabitCategories from "./Pages/HabitCategories";
 import Leaderboard from "./Pages/Leaderboard";
 import UserManagementPage from "./AdminPages/UserManagementPage";
 import AdminManagementPage from "./AdminPages/AdminManagementPage";
 import { UserProvider } from "./Components/UserContext";
+import UnlockedBadges from "./Pages/UnlockedBadges";
 
 function App() {
   return (
@@ -38,7 +38,6 @@ function App() {
             <Route path="/About" element={<About />} />
             <Route path="/Features" element={<Features />} />
             <Route path="/admin/badges" element={<BadgesManagementPage />} />
-            <Route path="/badges" element={<MyBadges />} />
             <Route path="/admin/habits" element={<HabitManagementPage />} />
             <Route path="/habit-categories" element={<HabitCategories />} />
 
@@ -47,6 +46,7 @@ function App() {
 
             <Route path="/admin/users" element={<UserManagementPage />} />
             <Route path="/admin/admins" element={<AdminManagementPage />} />
+            <Route path="/unlocked" element={<UnlockedBadges />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>
