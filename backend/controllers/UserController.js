@@ -710,3 +710,27 @@ exports.getLeaderboard = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+// Get logged-in user's completed habits count
+exports.getCompletedHabitsCount = async (req, res) => {
+  try {
+    const userId = req.user.userId; // from auth middleware
+
+    const user = await User.findById(userId).select("completedHabits");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const count = user.completedHabits.length;
+
+    res.status(200).json({
+      message: "Completed habits count fetched successfully",
+      count,
+      completedHabits: user.completedHabits // optional: send full array
+    });
+  } catch (err) {
+    console.error("Error fetching completed habits count:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
