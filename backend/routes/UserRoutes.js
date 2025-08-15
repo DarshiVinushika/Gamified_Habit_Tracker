@@ -15,12 +15,16 @@ const {
   updateCompletedHabits,
   getLoggedInInternDetails,
   updateXpAndLevel,
-  recalculateLevel
+  recalculateLevel,
+  getLeaderboard,
+  getUserStreak,
+  getCompletedHabitsCount
 } = require("../controllers/UserController");
 
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware"); 
 
+router.get("/leaderboard", getLeaderboard);
 // Public routes
 router.post("/register", upload.single("profilePic"), registerUser);
 router.post("/login", loginUser);
@@ -31,6 +35,7 @@ router.post("/google", googleLogin);
 // Admin-only routes
 router.get("/", authMiddleware, requireRole("admin"), getAllUsers);
 router.delete("/:id", authMiddleware, requireRole("admin"), deleteUser);
+router.get("/streak", authMiddleware, getUserStreak);
 
 // Authenticated user routes
 router.get("/:id", authMiddleware, getUserById);
@@ -53,4 +58,6 @@ router.post("/me/completed-habits", authMiddleware, updateCompletedHabits);
 router.get("/me/intern",  authMiddleware, getLoggedInInternDetails);
 router.patch("/me/xp-level", authMiddleware, updateXpAndLevel);
 router.put("/me/recalculate-level", authMiddleware, recalculateLevel);
+router.get("/me/count",authMiddleware,getCompletedHabitsCount);
+
 module.exports = router;

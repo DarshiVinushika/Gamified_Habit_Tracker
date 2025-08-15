@@ -29,6 +29,12 @@ const AdminSidebar = () => {
         <Link to="/admin/badges" className={linkClass("/admin/badges")}>
           Badges management
         </Link>
+        <Link to="/admin/admins" className={linkClass("/admin/admins")}>
+          Admin management
+        </Link>
+        <Link to="/login" className={linkClass("/login")}>
+          Intern Dashboard
+        </Link>
       </nav>
     </aside>
   );

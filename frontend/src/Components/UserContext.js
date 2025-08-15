@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
 
 const UserContext = createContext();
@@ -11,6 +11,9 @@ export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   const API_URL = process.env.REACT_APP_API_URL || "";
+  
+  // Memoize API_URL to prevent unnecessary re-renders
+  const memoizedApiUrl = useMemo(() => API_URL, [API_URL]);
 
   // Load user data from backend
  const loadUser = useCallback(async () => {
@@ -23,7 +26,7 @@ export const UserProvider = ({ children }) => {
   setLoadingUser(true);
   setError(null);
   try {
-    const res = await axios.get(`${API_URL}/api/users/me/intern`, {
+    const res = await axios.get(`${memoizedApiUrl}/api/users/me/intern`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setUser(res.data.intern);
@@ -33,7 +36,7 @@ export const UserProvider = ({ children }) => {
   } finally {
     setLoadingUser(false);
   }
-}, [token, API_URL]);
+}, [token, memoizedApiUrl]);
 
 
   // ✅ This block ensures re-sync on login/logout

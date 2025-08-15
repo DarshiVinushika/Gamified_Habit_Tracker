@@ -303,10 +303,11 @@ exports.addXpToUser = async (req, res) => {
   }
 };
 
-// Get user's completed habits
+
+// Get user's completed habits with dates
 exports.getCompletedHabits = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).populate("completedHabits", "name xpValue");
+    const user = await User.findById(req.user.userId).populate("completedHabits.habit", "name xpValue");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.status(200).json({ completedHabits: user.completedHabits });
@@ -315,11 +316,127 @@ exports.getCompletedHabits = async (req, res) => {
   }
 };
 
-// Update user's completed habits (add or remove one habit)
+// Function to recalculate and update user streak based on current completedHabits in DB
+exports.recalculateUserStreak = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+    
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Calculate streak based on current completedHabits array in DB
+    const calculatedStreak = calculateStreakFromDates(user.completedHabits);
+    
+    // Store old streak for comparison
+    const oldStreak = user.streak;
+    
+    // Update streak in database
+    user.streak = calculatedStreak;
+    await user.save();
+
+    res.status(200).json({
+      message: "Streak recalculated and updated successfully",
+      oldStreak: oldStreak,
+      newStreak: calculatedStreak,
+      streakChanged: oldStreak !== calculatedStreak
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Function to fix streak for all users (admin function)
+exports.recalculateAllUsersStreaks = async (req, res) => {
+  try {
+    const users = await User.find({});
+    let updatedCount = 0;
+    
+    for (let user of users) {
+      const calculatedStreak = calculateStreakFromDates(user.completedHabits);
+      
+      if (user.streak !== calculatedStreak) {
+        user.streak = calculatedStreak;
+        await user.save();
+        updatedCount++;
+      }
+    }
+
+    res.status(200).json({
+      message: "All user streaks recalculated",
+      totalUsers: users.length,
+      updatedUsers: updatedCount
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Debug function to check streak calculation (remove in production)
+exports.debugStreak = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+    
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Get unique dates from completedHabits
+    const uniqueDates = [...new Set(
+      user.completedHabits.map(entry => {
+        const date = new Date(entry.date);
+        return date.toISOString().split('T')[0];
+      })
+    )].sort((a, b) => new Date(b) - new Date(a));
+
+    const calculatedStreak = calculateStreakFromDates(user.completedHabits);
+    
+    const today = new Date().toISOString().split('T')[0];
+
+    res.status(200).json({
+      currentStreak: user.streak,
+      calculatedStreak: calculatedStreak,
+      uniqueCompletionDates: uniqueDates,
+      totalCompletions: user.completedHabits.length,
+      today: today,
+      mostRecentCompletion: uniqueDates[0] || null,
+      daysSinceLastCompletion: uniqueDates.length > 0 ? 
+        Math.floor((new Date(today) - new Date(uniqueDates[0])) / (1000 * 60 * 60 * 24)) : null
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Helper function to get current user streak (always recalculates from DB)
+exports.getUserStreak = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+    
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Always recalculate streak from current completedHabits in DB
+    const calculatedStreak = calculateStreakFromDates(user.completedHabits);
+    
+    // Update user's streak in database if it's different
+    if (user.streak !== calculatedStreak) {
+      user.streak = calculatedStreak;
+      await user.save();
+    }
+
+    res.status(200).json({ 
+      streak: calculatedStreak,
+      wasUpdated: user.streak !== calculatedStreak 
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Update user's completed habits (add or remove one habit with date)
 exports.updateCompletedHabits = async (req, res) => {
   try {
     const userId = req.user.userId;
-    const { habitId, completed } = req.body;
+    const { habitId, completed, date } = req.body;
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -327,25 +444,43 @@ exports.updateCompletedHabits = async (req, res) => {
     const habit = await Habit.findById(habitId);
     if (!habit) return res.status(404).json({ message: "Habit not found" });
 
+    // Use provided date or current date if not provided
+    const completionDate = date ? new Date(date) : new Date();
+    
+    // Check if this specific habit is already completed on this date
     const isCompletedAlready = user.completedHabits.some(
-      (id) => id.toString() === habitId
+      (entry) => 
+        entry.habit.toString() === habitId && 
+        entry.date.toDateString() === completionDate.toDateString()
     );
 
     if (completed && !isCompletedAlready) {
-      user.completedHabits.push(habitId);
+      // Add new habit completion with date
+      user.completedHabits.push({
+        habit: habitId,
+        date: completionDate
+      });
       user.xp += habit.xpValue;
     } else if (!completed && isCompletedAlready) {
+      // Remove habit completion for the specific date
       user.completedHabits = user.completedHabits.filter(
-        (id) => id.toString() !== habitId
+        (entry) => !(
+          entry.habit.toString() === habitId && 
+          entry.date.toDateString() === completionDate.toDateString()
+        )
       );
       user.xp = Math.max(0, user.xp - habit.xpValue);
     }
+
+    // Calculate and update streak based on unique completion dates
+    user.streak = calculateStreakFromDates(user.completedHabits);
 
     await user.save();
 
     res.status(200).json({
       message: `Habit ${completed ? "added" : "removed"} successfully`,
       newXp: user.xp,
+      streak: user.streak,
       completedHabits: user.completedHabits,
     });
   } catch (err) {
@@ -354,7 +489,110 @@ exports.updateCompletedHabits = async (req, res) => {
   }
 };
 
+// Additional helper function to get habits completed on a specific date
+exports.getHabitsForDate = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { date } = req.params; // Expected format: YYYY-MM-DD
+    
+    const targetDate = new Date(date);
+    const user = await User.findById(userId).populate("completedHabits.habit", "name xpValue");
+    
+    if (!user) return res.status(404).json({ message: "User not found" });
 
+    // Filter habits completed on the specific date
+    const habitsForDate = user.completedHabits.filter(
+      (entry) => entry.date.toDateString() === targetDate.toDateString()
+    );
+
+    res.status(200).json({ 
+      date: targetDate,
+      completedHabits: habitsForDate 
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Helper function to calculate streak from completion dates
+const calculateStreakFromDates = (completedHabits) => {
+  if (!completedHabits || completedHabits.length === 0) {
+    return 0;
+  }
+
+  // Get unique dates only (multiple habits on same day = 1 day)
+  const uniqueDateStrings = [...new Set(
+    completedHabits.map(entry => {
+      const date = new Date(entry.date);
+      // Convert to local date string to avoid timezone issues
+      return date.toISOString().split('T')[0]; // YYYY-MM-DD format
+    })
+  )];
+
+  if (uniqueDateStrings.length === 0) {
+    return 0;
+  }
+
+  // Sort dates (newest first)
+  const sortedDates = uniqueDateStrings.sort((a, b) => new Date(b) - new Date(a));
+
+  const today = new Date();
+  const todayString = today.toISOString().split('T')[0];
+  
+  const mostRecentDateString = sortedDates[0];
+  const mostRecentDate = new Date(mostRecentDateString);
+  const todayDate = new Date(todayString);
+
+  // Calculate days difference
+  const daysDifference = Math.floor((todayDate - mostRecentDate) / (1000 * 60 * 60 * 24));
+  
+  // If more than 1 day has passed since last completion, streak is broken
+  if (daysDifference > 1) {
+    return 0;
+  }
+
+  let streak = 1; // Start with 1 since we have at least one completion date
+  
+  // Check consecutive days backwards from the most recent date
+  for (let i = 1; i < sortedDates.length; i++) {
+    const currentDate = new Date(sortedDates[i]);
+    const previousDate = new Date(sortedDates[i - 1]);
+    
+    // Calculate difference between consecutive dates
+    const dayGap = Math.floor((previousDate - currentDate) / (1000 * 60 * 60 * 24));
+    
+    if (dayGap === 1) {
+      // Consecutive day found
+      streak++;
+    } else {
+      // Gap found - break the streak
+      break;
+    }
+  }
+
+  return streak;
+};
+
+// Helper function to get habit completion streak for a specific habit
+exports.getHabitStreak = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { habitId } = req.params;
+    
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Get all completions for this specific habit
+    const habitCompletions = user.completedHabits
+      .filter(entry => entry.habit.toString() === habitId);
+
+    const streak = calculateStreakFromDates(habitCompletions);
+
+    res.status(200).json({ streak });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
 // Get Logged-in Intern Details Only
 exports.getLoggedInInternDetails = async (req, res) => {
   try {
@@ -452,3 +690,47 @@ exports.recalculateLevel = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+// Controller to get leaderboard users in descending order by xp
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const users = await User.find()
+      .select("name xp level streak badges")
+      .lean(); // Use lean for faster response
+
+    const sortedUsers = users
+      .map(user => ({
+        ...user,
+        badgeCount: user.badges?.length || 0,
+      }))
+      .sort((a, b) => b.xp - a.xp); // Sort by xp descending
+
+    res.status(200).json({ users: sortedUsers });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+// Get logged-in user's completed habits count
+exports.getCompletedHabitsCount = async (req, res) => {
+  try {
+    const userId = req.user.userId; // from auth middleware
+
+    const user = await User.findById(userId).select("completedHabits");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const count = user.completedHabits.length;
+
+    res.status(200).json({
+      message: "Completed habits count fetched successfully",
+      count,
+      completedHabits: user.completedHabits // optional: send full array
+    });
+  } catch (err) {
+    console.error("Error fetching completed habits count:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+

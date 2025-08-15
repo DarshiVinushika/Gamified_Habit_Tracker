@@ -59,9 +59,11 @@ const Navbar = () => {
               <Link to="/leaderboard" className={navLinkClass}>
                 Leaderboard
               </Link>
-              <Link to="/badges" className={navLinkClass}>
+
+               <Link to="/unlocked" className={navLinkClass}>
                 My Badges
               </Link>
+
             </>
           ) : (
             // Logged-out user navigation
@@ -95,12 +97,6 @@ const Navbar = () => {
               className="px-6 py-2 rounded-full text-white font-semibold bg-gradient-to-r from-indigo-700 to-purple-700 shadow-lg hover:shadow-glow hover:from-indigo-800 hover:to-purple-800 transition-all duration-300 scale-100 hover:scale-105 hover:animate-pulse w-full text-center"
             >
               Login
-            </Link>
-            <Link
-              to="/register"
-              className="px-6 py-2 rounded-full text-white font-semibold bg-gradient-to-r from-indigo-700 to-purple-700 shadow-lg hover:shadow-glow hover:from-indigo-800 hover:to-purple-800 transition-all duration-300 scale-100 hover:scale-105 hover:animate-pulse w-full text-center"
-            >
-              Register
             </Link>
           </>
         )}
@@ -144,7 +140,7 @@ const Navbar = () => {
                 Leaderboard
               </Link>
               <Link
-                to="/badges"
+                to="/unlocked"
                 className={`${navLinkClass} block w-full text-center py-2 bg-indigo-800/30 rounded-lg hover:bg-indigo-800/50 transition-colors duration-300`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -152,7 +148,7 @@ const Navbar = () => {
               </Link>
               {user.role === "admin" && (
                 <Link
-                  to="/admin/badges"
+                  to="/admin/unlocked"
                   className={`${navLinkClass} block w-full text-center py-2 bg-indigo-800/30 rounded-lg hover:bg-indigo-800/50 transition-colors duration-300`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
