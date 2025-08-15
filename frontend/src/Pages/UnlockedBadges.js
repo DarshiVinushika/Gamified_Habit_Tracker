@@ -1,5 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { 
+  FaMedal, 
+  FaTrophy, 
+  FaStar, 
+  FaFire, 
+  FaCheckCircle, 
+  FaLock, 
+  FaUsers, 
+  FaChartLine,
+  FaAward,
+  FaGem
+} from "react-icons/fa";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import { useUser } from "../Components/UserContext";
@@ -10,6 +22,7 @@ const UnlockedBadges = () => {
   const [loadingBadges, setLoadingBadges] = useState(true);
   const [error, setError] = useState(null);
   const [completedHabitsCount, setCompletedHabitsCount] = useState(0);
+  const [retryCount, setRetryCount] = useState(0);
 
   const API_URL = process.env.REACT_APP_API_URL || "";
 
@@ -19,16 +32,34 @@ const UnlockedBadges = () => {
       setLoadingBadges(true);
       setError(null);
       try {
-        const res = await axios.get(`${API_URL}/api/badges`);
+        const token = localStorage.getItem("token");
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        
+        const res = await axios.get(`${API_URL}/api/badges`, { headers });
         setBadges(res.data || []);
+        setRetryCount(0); // Reset retry count on success
       } catch (err) {
+        console.error("Error fetching badges:", err);
         setError(err.response?.data?.message || "Failed to fetch badges");
+        
+        // Auto-retry on network errors
+        if (err.code === 'NETWORK_ERROR' || !err.response) {
+          setTimeout(() => {
+            if (retryCount < 3) {
+              setRetryCount(prev => prev + 1);
+            }
+          }, 2000);
+        }
       } finally {
         setLoadingBadges(false);
       }
     };
-    fetchBadges();
-  }, [API_URL]);
+    
+    // Only fetch badges if we have a user or if we're not loading user
+    if (!loadingUser) {
+      fetchBadges();
+    }
+  }, [API_URL, loadingUser, retryCount]);
 
   // Fetch completed habits count from backend
   useEffect(() => {
@@ -138,18 +169,18 @@ const UnlockedBadges = () => {
 
   const getCategoryIcon = (category) => {
     switch (category) {
-      case "level": return "🏆";
-      case "xp": return "💰";
-      case "streak": return "🔥";
-      case "completion": return "✅";
-      case "combined": return "🌟";
-      default: return "🎯";
+      case "level": return <FaTrophy className="text-lg" />;
+      case "xp": return <FaStar className="text-lg" />;
+      case "streak": return <FaFire className="text-lg" />;
+      case "completion": return <FaCheckCircle className="text-lg" />;
+      case "combined": return <FaGem className="text-lg" />;
+      default: return <FaAward className="text-lg" />;
     }
   };
 
   const getCategoryColor = (category) => {
     switch (category) {
-      case "level": return "from-blue-600 to-purple-600";
+      case "level": return "from-blue-600 to-indigo-600";
       case "xp": return "from-yellow-500 to-orange-500";
       case "streak": return "from-red-500 to-pink-500";
       case "completion": return "from-green-500 to-teal-500";
@@ -158,114 +189,214 @@ const UnlockedBadges = () => {
     }
   };
 
+  const getCategoryLabel = (category) => {
+    switch (category) {
+      case "level": return "Level";
+      case "xp": return "XP";
+      case "streak": return "Streak";
+      case "completion": return "Completion";
+      case "combined": return "Combined";
+      default: return "Other";
+    }
+  };
+
+  if (loadingUser) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center px-4 py-8 md:ml-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-slate-600 text-lg">Loading user data...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (loadingBadges) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center px-4 py-8 md:ml-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-slate-600 text-lg">Loading badges...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e0c4ff] via-[#8a2be2] to-[#8a2be2] text-white font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Navbar />
-      <div className="flex-1 p-6">
-        <div className="bg-[#1e0033] text-white rounded-2xl mt-8 p-6 shadow-2xl border border-purple-800 w-[80%] mx-auto ml-60">
-          <h2 className="text-3xl font-bold text-center font-extrabold text-blue-200 tracking-wide uppercase drop-shadow-[0_0_3px_rgba(59,130,246,0.5)] mb-8">
-            🏅 All Badges
-          </h2>
+      <main className="flex-grow px-4 py-6 md:ml-64">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mb-6 shadow-lg">
+              <FaMedal className="text-3xl text-white" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
+              Badge Collection
+            </h1>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Unlock achievements by completing habits, building streaks, and leveling up your professional development journey.
+            </p>
+          </div>
 
-          {(loadingUser || loadingBadges) && (
-            <p className="text-center text-purple-200">Loading...</p>
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
+              <p className="text-red-600 font-medium">{error}</p>
+            </div>
           )}
 
-          {!loadingUser && !loadingBadges && error && (
-            <p className="text-center text-red-300">{error}</p>
+          {/* Login Required Message */}
+          {!loadingUser && !loadingBadges && !error && !user && (
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-8 text-center">
+              <FaUsers className="text-4xl text-blue-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-blue-800 mb-2">Login Required</h3>
+              <p className="text-blue-600">Please log in to view your badge status and progress.</p>
+            </div>
           )}
 
-          {!loadingUser && !loadingBadges && !error && (
-            <>
-              {!user && (
-                <p className="text-center text-purple-200">Please log in to view your badge status.</p>
-              )}
-
-              {user && (
-                <div className="space-y-8">
-                  {/* User Stats Summary */}
-                  <div className="bg-purple-800/40 rounded-xl p-6 border border-purple-600">
-                    <h3 className="text-xl font-bold text-blue-200 mb-4 text-center">Your Progress</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-200">{userStats.level}</div>
-                        <div className="text-sm text-purple-200">Level</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-yellow-200">{userStats.xp}</div>
-                        <div className="text-sm text-purple-200">XP</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-red-200">{userStats.streak}</div>
-                        <div className="text-sm text-purple-200">Streak</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-green-200">{userStats.completedHabits}</div>
-                        <div className="text-sm text-purple-200">Completed</div>
-                      </div>
-                    </div>
+          {/* User Stats Summary */}
+          {user && (
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-slate-200/60">
+              <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Your Progress Overview</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <FaTrophy className="text-2xl text-white" />
                   </div>
-
-                  {/* Badges Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {badgesWithStatus.map((badge) => {
-                      const category = getBadgeCategory(badge);
-                      const progress = getProgressPercentage(badge);
-                      const isUnlocked = badge.unlocked;
-
-                      return (
-                        <div
-                          key={badge._id}
-                          className={`relative rounded-xl shadow-lg flex flex-col items-center p-6 hover:scale-105 transition-transform duration-300 border ${
-                            isUnlocked
-                              ? "bg-gradient-to-br from-purple-900/80 to-purple-800/60 border-teal-400 shadow-teal-400/20"
-                              : "bg-gradient-to-br from-purple-900/40 to-purple-800/20 border-purple-700"
-                          }`}
-                        >
-                          <div className={`absolute top-2 right-2 bg-gradient-to-r ${getCategoryColor(category)} text-white text-xs px-2 py-1 rounded-full font-semibold`}>
-                            {getCategoryIcon(category)}
-                          </div>
-                          <div className="text-6xl mb-3 mt-2">{badge.icon}</div>
-                          <div className="font-bold text-lg text-center text-teal-200 mb-2">{badge.name}</div>
-                          <div className="text-sm text-purple-200 text-center mb-4">{badge.description}</div>
-
-                          {!isUnlocked && progress > 0 && (
-                            <div className="w-full mb-3">
-                              <div className="text-xs text-purple-300 mb-1 text-center">
-                                Progress: {Math.round(progress)}%
-                              </div>
-                              <div className="w-full bg-purple-700 rounded-full h-2">
-                                <div
-                                  className="bg-gradient-to-r from-teal-400 to-blue-400 h-2 rounded-full transition-all duration-300"
-                                  style={{ width: `${progress}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                          )}
-
-                          <div className="text-xs text-purple-300 text-center mb-3 font-mono">
-                            {badge.criteria}
-                          </div>
-
-                          {isUnlocked ? (
-                            <div className="flex items-center text-green-400 font-semibold mt-2">
-                              <span className="text-2xl mr-2">✅</span> Unlocked
-                            </div>
-                          ) : (
-                            <div className="flex items-center text-gray-400 font-semibold mt-2">
-                              <span className="text-2xl mr-2">🔒</span> Locked
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                  <h3 className="text-3xl font-bold text-slate-800 mb-1">{userStats.level}</h3>
+                  <p className="text-slate-600">Current Level</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <FaStar className="text-2xl text-white" />
                   </div>
+                  <h3 className="text-3xl font-bold text-slate-800 mb-1">{userStats.xp}</h3>
+                  <p className="text-slate-600">Total XP</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <FaFire className="text-2xl text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-slate-800 mb-1">{userStats.streak}</h3>
+                  <p className="text-slate-600">Current Streak</p>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <FaCheckCircle className="text-2xl text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-slate-800 mb-1">{userStats.completedHabits}</h3>
+                  <p className="text-slate-600">Habits Completed</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Badges Grid */}
+          {user && (
+            <div className="space-y-8">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-slate-800">Available Badges</h2>
+                <div className="text-sm text-slate-600">
+                  {badgesWithStatus.filter(b => b.unlocked).length} of {badgesWithStatus.length} unlocked
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                {badgesWithStatus.map((badge) => {
+                  const category = getBadgeCategory(badge);
+                  const progress = getProgressPercentage(badge);
+                  const isUnlocked = badge.unlocked;
+
+                  return (
+                                         <div
+                       key={badge._id}
+                       className={`relative bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border transition-all duration-300 hover:shadow-xl transform hover:scale-105 ${
+                         isUnlocked
+                           ? 'border-green-200 ring-2 ring-green-500 ring-opacity-30'
+                           : 'border-slate-200'
+                       }`}
+                     >
+                       {/* Category Badge */}
+                       <div className="absolute top-2 right-2">
+                         <div className={`bg-gradient-to-r ${getCategoryColor(category)} text-white text-xs px-2 py-1 rounded-full font-semibold flex items-center space-x-1`}>
+                           {getCategoryIcon(category)}
+                           <span className="text-xs">{getCategoryLabel(category)}</span>
+                         </div>
+                       </div>
+
+                       {/* Badge Content */}
+                       <div className="p-4 text-center">
+                         <div className="text-4xl mb-3 mt-1">{badge.icon}</div>
+                         
+                         <h3 className={`font-bold text-base mb-2 ${
+                           isUnlocked ? 'text-slate-800' : 'text-slate-600'
+                         }`}>
+                           {badge.name}
+                         </h3>
+                         
+                         <p className="text-slate-600 text-xs mb-3 leading-relaxed">
+                           {badge.description}
+                         </p>
+
+                         {/* Progress Bar */}
+                         {!isUnlocked && progress > 0 && (
+                           <div className="w-full mb-3">
+                             <div className="flex justify-between text-xs text-slate-500 mb-1">
+                               <span>Progress</span>
+                               <span>{Math.round(progress)}%</span>
+                             </div>
+                             <div className="w-full bg-slate-200 rounded-full h-1.5">
+                               <div
+                                 className="bg-gradient-to-r from-blue-500 to-purple-500 h-1.5 rounded-full transition-all duration-300"
+                                 style={{ width: `${progress}%` }}
+                               ></div>
+                             </div>
+                           </div>
+                         )}
+
+                         {/* Status */}
+                         {isUnlocked ? (
+                           <div className="flex items-center justify-center text-green-600 font-semibold text-sm">
+                             <FaCheckCircle className="mr-1 text-sm" />
+                             <span>Unlocked</span>
+                           </div>
+                         ) : (
+                           <div className="flex items-center justify-center text-slate-400 font-semibold text-sm">
+                             <FaLock className="mr-1 text-sm" />
+                             <span>Locked</span>
+                           </div>
+                         )}
+                       </div>
+                     </div>
+                  );
+                })}
+              </div>
+
+              {/* Empty State */}
+              {badgesWithStatus.length === 0 && (
+                <div className="text-center py-12">
+                  <FaMedal className="text-6xl text-slate-300 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-slate-600 mb-2">No badges available</h3>
+                  <p className="text-slate-500">Contact admin to add badges to the system!</p>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

@@ -235,7 +235,7 @@ exports.getCurrentUser = async (req, res) => {
     }
 
     const user = await User.findById(req.user.userId).select(
-      "_id name email role xp level streak profilePic"
+      "_id name email role xp level streak profilePic createdAt authSource"
     );
 
     if (!user) {
@@ -603,7 +603,7 @@ exports.getLoggedInInternDetails = async (req, res) => {
 
     // Fetch user from DB
     const user = await User.findById(req.user.userId).select(
-      "_id name email role xp level streak profilePic"
+      "_id name email role xp level streak profilePic createdAt authSource"
     );
 
     // Check role
@@ -694,7 +694,7 @@ exports.recalculateLevel = async (req, res) => {
 // Controller to get leaderboard users in descending order by xp
 exports.getLeaderboard = async (req, res) => {
   try {
-    const users = await User.find()
+    const users = await User.find({ role: "intern" })
       .select("name xp level streak badges")
       .lean(); // Use lean for faster response
 

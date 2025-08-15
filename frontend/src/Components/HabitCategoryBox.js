@@ -18,37 +18,61 @@ function HabitCategoryBox({
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-950 to-purple-950 rounded-2xl shadow-2xl p-6 mb-6 border-l-4 border-purple-400 w-96 transition-all duration-300 hover:shadow-[0_0_15px_rgba(124,58,237,0.7)] ml-36">
-      <div className="flex items-center mb-4">
-        <span className="text-3xl mr-3 text-purple-300 drop-shadow-[0_0_5px_rgba(124,58,237,0.8)]">{icon}</span>
-        <span className="font-extrabold text-2xl text-blue-200 tracking-wide uppercase drop-shadow-[0_0_3px_rgba(59,130,246,0.5)]">{title}</span>
+    <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/60 p-6 mb-6 transition-all duration-300 hover:shadow-xl">
+      <div className="flex items-center mb-6">
+        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+          <span className="text-2xl text-white">{icon}</span>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
+          <p className="text-slate-600 text-lg">{habits.length} habits available</p>
+        </div>
       </div>
+      
       <div className="space-y-4">
         {habits.map((habit) => (
           <div
             key={habit.name}
-            className="flex items-center justify-between p-4 rounded-lg bg-gray-900/80 shadow-md hover:bg-purple-900/50 transition-all duration-200 hover:scale-[1.02]"
+            className={`p-4 rounded-xl transition-all duration-200 hover:scale-[1.02] ${
+              checkedHabits[habit.name]
+                ? 'bg-green-50 border border-green-200 ring-2 ring-green-500 ring-opacity-30'
+                : 'bg-slate-50 border border-slate-200 hover:bg-slate-100'
+            }`}
           >
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={!!checkedHabits[habit.name]}
-                onChange={() => handleCheck(habits.indexOf(habit))}
-                className="accent-purple-500 w-6 h-6 mr-3 rounded-md border-blue-600 cursor-pointer shadow-[0_0_5px_rgba(124,58,237,0.5)]"
-              />
-              <span
-                className={
-                  checkedHabits[habit.name]
-                    ? "line-through text-gray-500 text-base font-semibold tracking-tight"
-                    : "text-blue-200 text-base font-semibold tracking-tight drop-shadow-[0_0_2px_rgba(59,130,246,0.3)]"
-                }
-              >
-                {habit.name}
-              </span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center flex-1">
+                <input
+                  type="checkbox"
+                  checked={!!checkedHabits[habit.name]}
+                  onChange={() => handleCheck(habits.indexOf(habit))}
+                  className="w-5 h-5 text-blue-600 bg-white border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                />
+                <span
+                  className={`ml-3 text-base font-medium ${
+                    checkedHabits[habit.name]
+                      ? 'line-through text-slate-400'
+                      : 'text-slate-700'
+                  }`}
+                >
+                  {habit.name}
+                </span>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200">
+                  +{habit.xp} XP
+                </span>
+                
+                {checkedHabits[habit.name] && (
+                  <div className="flex items-center text-green-600">
+                    <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    <span className="text-sm font-medium">Done!</span>
+                  </div>
+                )}
+              </div>
             </div>
-            <span className="bg-purple-500/20 text-purple-200 px-4 py-1 rounded-full text-sm font-bold shadow-[0_0_5px_rgba(124,58,237,0.4)] border border-purple-400/50">
-              +{habit.xp} XP
-            </span>
           </div>
         ))}
       </div>

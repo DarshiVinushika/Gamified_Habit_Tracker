@@ -18,6 +18,7 @@ import UserManagementPage from "./AdminPages/UserManagementPage";
 import AdminManagementPage from "./AdminPages/AdminManagementPage";
 import { UserProvider } from "./Components/UserContext";
 import UnlockedBadges from "./Pages/UnlockedBadges";
+import InternRegister from "./Pages/InternRegister";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/iregister" element={<InternRegister />} />
             <Route path="/AdminDashboard" element={<AdminDashboard />} />
             <Route path="/InternDashboard" element={<InternDashboard />} />
             <Route path="/login" element={<LoginPage />} />

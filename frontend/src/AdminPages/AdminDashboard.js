@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
-import Footer from "../Components/Footer";
 import {
   BarChart,
   Bar,
@@ -176,7 +175,6 @@ function AdminDashboard() {
         </div>
 
         <div className="mt-12">
-          <Footer />
         </div>
       </main>
     </div>

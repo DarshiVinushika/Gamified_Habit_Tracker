@@ -6,6 +6,9 @@ import {
   FaUsers,
   FaUserTie,
   FaTrophy,
+  FaStar,
+  FaCheckCircle,
+  FaArrowRight,
 } from "react-icons/fa";
 import HabitCategoryBox from "../Components/HabitCategoryBox";
 import Navbar from "../Components/Navbar";
@@ -29,20 +32,36 @@ const CATEGORY_ICONS = {
   challenge: <FaTrophy />,
 };
 
+const CATEGORY_COLORS = {
+  work: "from-blue-600 to-indigo-700",
+  learning: "from-emerald-600 to-teal-700",
+  collaboration: "from-purple-600 to-pink-700",
+  discipline: "from-orange-600 to-red-700",
+  challenge: "from-yellow-600 to-amber-700",
+};
+
 const LOCAL_STORAGE_KEY = "checkedHabits";
 
 function HabitCategories() {
   const [habits, setHabits] = useState([]);
   const [checkedHabits, setCheckedHabits] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const { updateUserXpAndStreak } = useUser();
 
   // Load all habits on mount
   useEffect(() => {
+    setLoading(true);
     axios
       .get("http://localhost:8080/api/habits")
-      .then((res) => setHabits(res.data))
-      .catch(() => setHabits([]));
+      .then((res) => {
+        setHabits(res.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setHabits([]);
+        setLoading(false);
+      });
   }, []);
 
   // Load completed habits for user from backend after habits load
@@ -126,6 +145,7 @@ function HabitCategories() {
     key: catKey,
     title: CATEGORY_LABELS[catKey],
     icon: CATEGORY_ICONS[catKey],
+    color: CATEGORY_COLORS[catKey],
     habits: habits
       .filter((h) => h.category === catKey)
       .map((h) => ({
@@ -135,26 +155,147 @@ function HabitCategories() {
       })),
   }));
 
+  // Calculate total habits and completed habits
+  const totalHabits = habits.length;
+  const completedHabitsCount = Object.keys(checkedHabits).filter(key => checkedHabits[key]).length;
+  const completionRate = totalHabits > 0 ? Math.round((completedHabitsCount / totalHabits) * 100) : 0;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center px-4 py-8 md:ml-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-slate-600 text-lg">Loading habit categories...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f3e5f5] via-[#bb86fc] to-[#7b1fa2] text-white font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <Navbar />
-      <main className="flex flex-col items-center flex-grow py-8 md:ml-64">
-        <div className="w-full max-w-4xl space-y-10 bg-[rgba(26,0,37,0.4)] p-10 rounded-2xl border-2 border-[#e0c4ff] shadow-[0_0_40px_rgba(156,39,176,0.9)] text-white font-['Press_Start_2P'] backdrop-blur-md">
-          <UserProfileCard />
-          {habitsByCategory.map(
-            (cat) =>
-              cat.habits.length > 0 && (
-                <div className="ml-16" key={cat.key}>
-                  <HabitCategoryBox
-                    title={cat.title}
-                    icon={cat.icon}
-                    habits={cat.habits}
-                    checkedHabits={checkedHabits}
-                    onHabitCheck={handleHabitCheck}
-                  />
+      <main className="flex-grow px-4 py-6 md:ml-64">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-6 shadow-lg">
+              <FaStar className="text-3xl text-white" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4">
+              Habit Categories
+            </h1>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              Track your daily habits across different categories and build consistency in your professional development journey.
+            </p>
+          </div>
+
+          {/* User Profile Card */}
+          <div className="mb-8">
+            <UserProfileCard />
+          </div>
+
+          {/* Progress Overview */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-slate-200/60 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaCheckCircle className="text-2xl text-white" />
                 </div>
-              )
-          )}
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">{completedHabitsCount}</h3>
+                <p className="text-slate-600">Completed Today</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaStar className="text-2xl text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">{totalHabits}</h3>
+                <p className="text-slate-600">Total Habits</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaTrophy className="text-2xl text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-800 mb-2">{completionRate}%</h3>
+                <p className="text-slate-600">Completion Rate</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Categories Grid */}
+          <div className="space-y-8">
+            {habitsByCategory.map(
+              (cat) =>
+                cat.habits.length > 0 && (
+                  <div key={cat.key} className="animate-fade-in-up">
+                    <div className="mb-6">
+                      <div className="flex items-center mb-4">
+                        <div className={`w-12 h-12 bg-gradient-to-br ${cat.color} rounded-xl flex items-center justify-center mr-4 shadow-lg`}>
+                          <span className="text-2xl text-white">{cat.icon}</span>
+                        </div>
+                        <div>
+                          <h2 className="text-3xl font-bold text-slate-800">{cat.title}</h2>
+                          <p className="text-slate-600 text-lg">{cat.habits.length} habits available</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {cat.habits.map((habit) => (
+                        <div
+                          key={habit._id}
+                          className={`bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300 transform hover:scale-105 ${
+                            checkedHabits[habit.name] ? 'ring-2 ring-green-500 ring-opacity-50' : ''
+                          }`}
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                              <div className="flex items-center mb-3">
+                                <input
+                                  type="checkbox"
+                                  checked={!!checkedHabits[habit.name]}
+                                  onChange={() => handleHabitCheck(habit, !checkedHabits[habit.name])}
+                                  className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                                />
+                                <span className="ml-3 text-sm font-medium text-slate-500">
+                                  {checkedHabits[habit.name] ? 'Completed' : 'Mark as done'}
+                                </span>
+                              </div>
+                              
+                              <h3 className={`text-lg font-semibold mb-2 ${
+                                checkedHabits[habit.name] 
+                                  ? 'text-slate-400 line-through' 
+                                  : 'text-slate-800'
+                              }`}>
+                                {habit.name}
+                              </h3>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200">
+                                  +{habit.xp} XP
+                                </span>
+                                
+                                {checkedHabits[habit.name] && (
+                                  <div className="flex items-center text-green-600">
+                                    <FaCheckCircle className="mr-1" />
+                                    <span className="text-sm font-medium">Done!</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+            )}
+          </div>
         </div>
       </main>
       <Footer />
