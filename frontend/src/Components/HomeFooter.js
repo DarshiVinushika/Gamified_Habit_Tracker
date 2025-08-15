@@ -26,7 +26,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 overflow-hidden mt-auto ml-64">
+    <footer className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 overflow-hidden mt-auto">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-24 h-24 bg-blue-400 rounded-full blur-3xl animate-pulse"></div>

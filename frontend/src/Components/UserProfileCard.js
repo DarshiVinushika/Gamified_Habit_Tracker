@@ -115,7 +115,6 @@ const UserProfileCard = () => {
         />
         <div className="flex-1">
           <div className="flex items-center mb-4">
-            <span className="text-3xl mr-3 text-purple-300 drop-shadow-[0_0_5px_rgba(124,58,237,0.8)]">⭐</span>
             <span className="font-extrabold text-2xl text-blue-200 tracking-wide uppercase drop-shadow-[0_0_3px_rgba(59,130,246,0.5)]">Level Progress</span>
           </div>
           <div className="flex items-center mb-2">

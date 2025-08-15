@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { loginUser, googleLogin } from "../Services/authService";
-import Footer from "../Components/Footer";
 import { toast } from "react-toastify";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import Navbar from "../Components/Navbar";
+import { FaEye, FaEyeSlash, FaArrowLeft } from "react-icons/fa";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import login from '../assets/login.jpg';
+import logo from '../assets/logo.png';
+import HomeFooter from "../Components/HomeFooter";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -63,19 +65,23 @@ function LoginPage() {
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
       <div className="flex flex-col min-h-screen">
-        <Navbar />
         {/* Added md:ml-64 to shift content right of sidebar on desktop */}
-        <main className="flex-grow flex items-center justify-center px-4 bg-cover bg-center md:ml-64">
-          <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
+        <main className="flex-grow flex items-center justify-center px-4 bg-cover bg-center " style={{ backgroundImage: `url(${login})` }}>
+          <div className="bg-white shadow-xl rounded-lg p-8 w-full max-w-md mt-20 mb-20" >
+            <img
+              src={logo}
+              alt="HabitHero Logo"
+              className="h-20 rounded-full shadow-md hover:scale-110 transition-transform duration-300 border border-purple-700 "
+            />
             <h2 className="text-2xl font-bold text-center text-indigo-700 mb-6">
               Login
             </h2>
             {errorMsg && (
-              <p className="text-red-500 mb-4 text-sm text-center">{errorMsg}</p>
+              <p className="text-red-500 mb-4 text-sm text-center ">{errorMsg}</p>
             )}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 ">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 ">
                   Email
                 </label>
                 <input
@@ -152,10 +158,31 @@ function LoginPage() {
                   }}
                 />
               </div>
+              {/* Add this section for the registration link */}
+              <div className="mt-4 text-sm">
+                <p className="text-gray-600">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/iregister"
+                    className="text-indigo-600 hover:text-indigo-800 font-medium"
+                  >
+                    Register here
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
+
+          {/* Back button */}
+          <Link
+            to="/"
+            className="absolute top-1 left-1 bg-white rounded-full p-3 shadow-lg hover:bg-indigo-50 transition-all duration-300 transform hover:scale-110"
+            title="Back to home"
+          >
+            <FaArrowLeft className="text-xl text-indigo-600" />
+          </Link>
         </main>
-        <Footer />
+        <HomeFooter />
       </div>
     </GoogleOAuthProvider>
   );
