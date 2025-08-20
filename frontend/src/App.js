@@ -20,6 +20,7 @@ import { UserProvider } from "./Components/UserContext";
 import UnlockedBadges from "./Pages/UnlockedBadges";
 import InternRegister from "./Pages/InternRegister";
 import ViewLeaderboard from "./AdminPages/ViewLeaderboard";
+import AdminProfile from "./AdminPages/AdminProfile";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
             <Route path="/admin/admins" element={<AdminManagementPage />} />
             <Route path="/unlocked" element={<UnlockedBadges />} />
             <Route path="/viewleaderboard" element={<ViewLeaderboard/>}/>
+            <Route path="/adminprofile" element={<AdminProfile/>}/>
           </Routes>
         </BrowserRouter>
       </UserProvider>

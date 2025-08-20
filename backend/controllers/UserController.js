@@ -1,16 +1,30 @@
 const User = require("../models/User");
-const Habit = require("../models/Habit");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const fs = require("fs");
-const path = require("path");
+const axios = require("axios");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// Google Login
+// Helper function to check if email exists in SLT API
+const isValidInternEmail = async (email) => {
+  try {
+    const response = await axios.post(
+      "https://prohub.slt.com.lk/ProhubTrainees/api/MainApi/AllActiveTrainees",
+      { secretKey: "TraineesApi_SK_8d!x7F#mZ3@pL2vW" }
+    );
+
+    const trainees = response.data?.dataBundle || [];
+    return trainees.some(t => t.Trainee_Email.toLowerCase() === email.toLowerCase());
+  } catch (err) {
+    console.error("Error checking trainee API:", err.message);
+    return false;
+  }
+};
+
+// Google Login (Interns only)
 exports.googleLogin = async (req, res) => {
   try {
-    const { credential } = req.body; // Google ID token from frontend
+    const { credential } = req.body;
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -18,25 +32,29 @@ exports.googleLogin = async (req, res) => {
     const payload = ticket.getPayload();
     const { email, sub: googleId, name, picture } = payload;
 
-    // Check if user exists
+    // Check if email exists in SLT API
+    const validIntern = await isValidInternEmail(email);
+    if (!validIntern) {
+      return res.status(403).json({ message: "Email not registered with SLT" });
+    }
+
     let user = await User.findOne({ email });
+
+    // New intern registration
     if (!user) {
-      // Create new user if they don't exist
       user = new User({
         name,
         email,
         googleId,
         authSource: "google",
         profilePic: picture,
-        role: "intern", // Default role
+        role: "intern",
       });
       await user.save();
     } else if (user.authSource !== "google") {
-      // Prevent email conflicts with email/password users
-      return res.status(400).json({ message: "Email already registered with email/password login" });
+      return res.status(400).json({ message: "Email already registered with email/password" });
     }
 
-    // Generate JWT
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -55,14 +73,17 @@ exports.googleLogin = async (req, res) => {
   }
 };
 
-// Register
+// Register (Admins only)
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
+    if (role === "intern") {
+      return res.status(403).json({ message: "Interns can only register using Google login" });
+    }
+
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "Email already exists" });
+    if (existingUser) return res.status(400).json({ message: "Email already exists" });
 
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
@@ -72,44 +93,35 @@ exports.registerUser = async (req, res) => {
       name,
       email,
       passwordHash,
-      role: role === "admin" ? "admin" : "intern", 
+      role: "admin",
       profilePic,
+      authSource: "email",
     });
 
     await newUser.save();
 
-    res
-      .status(201)
-      .json({ message: "User registered successfully", userId: newUser._id });
+    res.status(201).json({ message: "Admin registered successfully", userId: newUser._id });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-// Login
+// Login (Admins only)
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(400).json({ message: "Invalid email or password" });
+    if (!user) return res.status(400).json({ message: "Invalid email or password" });
 
-    // Compare password
+    if (user.authSource !== "email") {
+      return res.status(400).json({ message: "This account must login with Google" });
+    }
+
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid email or password" });
+    if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
 
-    // Generate JWT
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        role: user.role,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
     res.status(200).json({
       message: "Login successful",
@@ -122,6 +134,7 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 // Get all users
 exports.getAllUsers = async (req, res) => {

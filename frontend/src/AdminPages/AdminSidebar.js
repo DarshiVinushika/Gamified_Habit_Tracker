@@ -42,6 +42,9 @@ const AdminSidebar = () => {
         <Link to="/viewleaderboard" className={linkClass("/ViewLeaderboard")}>
           Intern Leaderboard
         </Link>
+        <Link to="/adminprofile" className={linkClass("/AdminProfile")}>
+          Profile
+        </Link>
         <Link
           to="/login"
           className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"

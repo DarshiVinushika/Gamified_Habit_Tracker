@@ -18,7 +18,7 @@ const {
   recalculateLevel,
   getLeaderboard,
   getUserStreak,
-  getCompletedHabitsCount
+  getCompletedHabitsCount,
 } = require("../controllers/UserController");
 
 const { authMiddleware, requireRole } = require("../middleware/authMiddleware");
@@ -36,6 +36,7 @@ router.post("/google", googleLogin);
 router.get("/", authMiddleware, requireRole("admin"), getAllUsers);
 router.delete("/:id", authMiddleware, requireRole("admin"), deleteUser);
 router.get("/streak", authMiddleware, getUserStreak);
+
 
 // Authenticated user routes
 router.get("/:id", authMiddleware, getUserById);
