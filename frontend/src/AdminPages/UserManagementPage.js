@@ -17,7 +17,12 @@ const UserManagementPage = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        setUsers(res.data.users || res.data);
+        // Filter only interns
+        const internUsers = (res.data.users || res.data).filter(
+          (user) => user.role === "intern"
+        );
+
+        setUsers(internUsers);
       } catch (err) {
         setError(err.response?.data?.message || err.message);
       } finally {
@@ -47,8 +52,7 @@ const UserManagementPage = () => {
                   <th className="border px-4 py-2 text-left">Role</th>
                   <th className="border px-4 py-2 text-left">XP</th>
                   <th className="border px-4 py-2 text-left">Level</th>
-                  <th className="border px-4 py-2 text-left">Streak</th>
-                  <th className="border px-4 py-2 text-left">Status</th>
+                  <th className="border px-4 py-2 text-left">Streak</th>                  
                 </tr>
               </thead>
               <tbody>
@@ -67,13 +71,6 @@ const UserManagementPage = () => {
                       <td className="border px-4 py-2">{user.xp ?? 0}</td>
                       <td className="border px-4 py-2">{user.level ?? "N/A"}</td>
                       <td className="border px-4 py-2">{user.streak ?? 0}</td>
-                      <td className="border px-4 py-2">
-                        {user.isActive ? (
-                          <span className="text-green-600 font-semibold">Active</span>
-                        ) : (
-                          <span className="text-red-600 font-semibold">Inactive</span>
-                        )}
-                      </td>
                     </tr>
                   ))
                 )}
