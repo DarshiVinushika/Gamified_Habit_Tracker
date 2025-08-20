@@ -28,19 +28,19 @@ const AdminSidebar = () => {
           Overview
         </Link>
         <Link to="/admin/habits" className={linkClass("/admin/habits")}>
-          Habits management
+          Habit management
         </Link>
         <Link to="/admin/users" className={linkClass("/admin/users")}>
           User management
         </Link>
         <Link to="/admin/badges" className={linkClass("/admin/badges")}>
-          Badges management
+          Badge management
         </Link>
         <Link to="/admin/admins" className={linkClass("/admin/admins")}>
           Admin management
         </Link>
-        <Link to="/login" className={linkClass("/login")}>
-          Intern Dashboard
+        <Link to="/viewleaderboard" className={linkClass("/ViewLeaderboard")}>
+          Intern Leaderboard
         </Link>
         <Link
           to="/login"
