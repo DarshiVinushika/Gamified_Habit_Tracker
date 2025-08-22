@@ -235,24 +235,6 @@ function InternDashboard() {
               </div>
             </div>
 
-            {/* Profile Picture Section */}
-            {intern?.profilePic && (
-              <div className="mt-6 pt-6 border-t border-slate-200">
-                <h3 className="text-lg font-semibold text-slate-700 mb-4">Profile Picture</h3>
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={`http://localhost:8080/uploads/${intern.profilePic}`}
-                    alt="Profile"
-                    className="w-20 h-20 rounded-full object-cover border-4 border-blue-200 shadow-lg"
-                  />
-                  <div>
-                    <p className="text-slate-600 text-sm">Your current profile picture</p>
-                    <p className="text-slate-500 text-xs">Uploaded on registration</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Account Status Section */}
             <div className="mt-6 pt-6 border-t border-slate-200">
               <h3 className="text-lg font-semibold text-slate-700 mb-4">Account Status</h3>
@@ -276,38 +258,6 @@ function InternDashboard() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Badges Section */}
-            <div className="mt-6 pt-6 border-t border-slate-200">
-              <h3 className="text-lg font-semibold text-slate-700 mb-4 flex items-center">
-                <FaMedal className="text-yellow-500 mr-2" />
-                Available Badges
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {userBadges.length > 0 ? (
-                  userBadges.map((badge, index) => (
-                    <div key={badge._id} className="p-4 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-lg border border-yellow-200 hover:shadow-md transition-shadow">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                          <FaMedal className="text-yellow-600 text-xl" />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-slate-800">{badge.name}</h4>
-                          <p className="text-sm text-slate-600">{badge.description}</p>
-                          <p className="text-xs text-yellow-600 font-medium">+{badge.xp || 0} XP</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="col-span-full text-center py-8 text-slate-500">
-                    <FaMedal className="text-4xl mx-auto mb-2 text-slate-300" />
-                    <p>No badges available yet</p>
-                    <p className="text-sm">Complete more habits to unlock badges!</p>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -349,65 +299,6 @@ function InternDashboard() {
                     <p className="text-sm">Start completing habits to see your progress here!</p>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300 animate-fade-in-up animation-delay-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-slate-600 text-sm font-medium">Current Streak</p>
-                  <p className="text-3xl font-bold text-orange-500 mt-1">
-                    {intern?.streak || 0} {getStreakEmoji(intern?.streak || 0)}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                  <FaFire className="text-2xl text-orange-500" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300 animate-fade-in-up animation-delay-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-slate-600 text-sm font-medium">Total XP</p>
-                  <p className="text-3xl font-bold text-blue-500 mt-1">
-                    {intern?.xp || 0} ⚡
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <FaStar className="text-2xl text-blue-500" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300 animate-fade-in-up animation-delay-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-slate-600 text-sm font-medium">Level</p>
-                  <p className={`text-3xl font-bold mt-1 ${getLevelColor(intern?.level || 1)}`}>
-                    {intern?.level || 1} 🏆
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <FaTrophy className="text-2xl text-purple-500" />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200/60 hover:shadow-xl transition-all duration-300 animate-fade-in-up animation-delay-400">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-slate-600 text-sm font-medium">Today's Progress</p>
-                  <p className={`text-3xl font-bold mt-1 ${getProgressColor(stats.completedToday)}`}>
-                    {stats.completedToday} ✅
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                  <FaCheckCircle className="text-2xl text-green-500" />
-                </div>
               </div>
             </div>
           </div>
@@ -465,43 +356,12 @@ function InternDashboard() {
                   <div className="group bg-gradient-to-r from-orange-500 to-red-600 rounded-xl p-6 text-white hover:from-orange-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="text-xl font-semibold mb-2">Progress Report</h3>
+                        <h3 className="text-xl font-semibold mb-2">Dashboard</h3>
                         <p className="text-orange-100 text-sm">View analytics</p>
                       </div>
                       <FaChartLine className="text-3xl text-orange-200 group-hover:scale-110 transition-transform" />
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Recent Activity */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200/60 mt-6 animate-fade-in-up animation-delay-600">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-slate-800">Available Habits</h2>
-                  <FaClock className="text-slate-400" />
-                </div>
-                
-                <div className="space-y-4">
-                  {recentHabits.length > 0 ? (
-                    recentHabits.map((habit, index) => (
-                      <div key={habit._id} className="flex items-center p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                          <FaCheckCircle className="text-blue-500" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-slate-800">{habit.name}</h3>
-                          <p className="text-sm text-slate-600">+{habit.xpValue} XP</p>
-                        </div>
-                        <span className="text-sm text-slate-500 capitalize">{habit.category}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8 text-slate-500">
-                      <FaClock className="text-4xl mx-auto mb-2 text-slate-300" />
-                      <p>No habits available</p>
-                      <p className="text-sm">Contact admin to add habits!</p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -549,47 +409,6 @@ function InternDashboard() {
                         className="bg-green-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${Math.min(100, (stats.totalHabits / 20) * 100)}%` }}
                       ></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* User Details */}
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200/60 animate-fade-in-up animation-delay-900">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">User Details</h2>
-                
-                <div className="space-y-3">
-                  <div className="flex items-center">
-                    <FaUsers className="text-blue-500 mr-3" />
-                    <div>
-                      <p className="text-sm text-slate-600">Full Name</p>
-                      <p className="font-semibold text-slate-800">{intern?.name || 'Not specified'}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <FaGraduationCap className="text-purple-500 mr-3" />
-                    <div>
-                      <p className="text-sm text-slate-600">Email</p>
-                      <p className="font-semibold text-slate-800">{intern?.email || 'Not specified'}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center">
-                    <FaCalendarAlt className="text-green-500 mr-3" />
-                    <div>
-                      <p className="text-sm text-slate-600">Role</p>
-                      <p className="font-semibold text-slate-800 capitalize">{intern?.role || 'Not specified'}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center">
-                    <FaStar className="text-yellow-500 mr-3" />
-                    <div>
-                      <p className="text-sm text-slate-600">Member Since</p>
-                      <p className="font-semibold text-slate-800">
-                        {intern?.createdAt ? new Date(intern.createdAt).toLocaleDateString() : 'Not available'}
-                      </p>
                     </div>
                   </div>
                 </div>
