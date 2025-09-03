@@ -148,7 +148,7 @@ const Leaderboard = () => {
                 <FaStar className="text-xl text-white" />
               </div>
               <h3 className="text-2xl font-bold text-slate-800 mb-1">{users[0]?.xp || 0}</h3>
-              <p className="text-slate-600">Highest XP</p>
+              <p className="text-slate-600">{users[0]?.name || 'N/A'}'s XP</p>
             </div>
             
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-200/60 text-center">
@@ -156,7 +156,7 @@ const Leaderboard = () => {
                 <FaFire className="text-xl text-white" />
               </div>
               <h3 className="text-2xl font-bold text-slate-800 mb-1">{users[0]?.streak || 0}</h3>
-              <p className="text-slate-600">Best Streak</p>
+              <p className="text-slate-600">{users[0]?.name || 'N/A'}'s Streak</p>
             </div>
           </div>
 
