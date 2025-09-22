@@ -19,6 +19,7 @@ import AdminManagementPage from "./AdminPages/AdminManagementPage";
 import { UserProvider } from "./Components/UserContext";
 import UnlockedBadges from "./Pages/UnlockedBadges";
 import InternRegister from "./Pages/InternRegister";
+import ViewLeaderboard from "./AdminPages/ViewLeaderboard";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             <Route path="/admin/users" element={<UserManagementPage />} />
             <Route path="/admin/admins" element={<AdminManagementPage />} />
             <Route path="/unlocked" element={<UnlockedBadges />} />
+            <Route path="/viewleaderboard" element={<ViewLeaderboard/>}/>
           </Routes>
         </BrowserRouter>
       </UserProvider>

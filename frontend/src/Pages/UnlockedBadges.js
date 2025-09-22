@@ -260,7 +260,7 @@ const UnlockedBadges = () => {
             <div className="bg-blue-50 border border-blue-200 rounded-2xl p-8 text-center">
               <FaUsers className="text-4xl text-blue-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-blue-800 mb-2">Login Required</h3>
-              <p className="text-blue-600">Please log in to view your badge status and progress.</p>
+              <p className="text-blue-600">Please Refresh the Page.</p>
             </div>
           )}
 
