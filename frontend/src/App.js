@@ -30,7 +30,8 @@ function App() {
         hideProgressBar={false}
       />
       <UserProvider>
-        <BrowserRouter>
+          {}
+        <BrowserRouter basename="/gamified">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
